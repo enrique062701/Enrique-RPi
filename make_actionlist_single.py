@@ -43,12 +43,20 @@ def desired_positions(location, delay_shift):
     """
     #First step is to convert your TCC coordinates to motor coordinates
 
-    location_matrix = np.array([[0, - 0.9, - 0.85],
-                                [0, - 1.3, - 0.85],
-                                [0, - 1.8, - 0.85],
-                                [0, - 2.1, - 0.85],
-                                [0, - 2.3, - 0.85],
-                                [0, - 2.7, - 0.85]])
+    location_matrix = np.array([[0, - 0.9, - 0.85], #Location 1
+                                [0, - 1.3, - 0.85], #Location 2
+                                [0, - 1.8, - 0.85], #Location 3
+                                [0, - 2.1, - 0.85], #Location 4
+                                [0, - 2.3, - 0.85], #Location 5
+                                [0, - 2.7, - 0.85]]) #Location 6
+    location_map = {
+        'Location 1': 0,
+        'Location 2': 1,
+        'Location 3': 2,
+        'Location 4': 3,
+        'Location 5': 4,
+        'Location 6': 5
+    }
 
     #motor_positions[6] += motor_positions[6] + float(delay_shift)
 
@@ -60,59 +68,35 @@ def desired_positions(location, delay_shift):
                               [480, 600, 630, 660, 780]])#Location 6
 
 
-    for location in range(len(location_matrix)):
-        pass
+    if location in location_map:
+        idx = location_map[location]
+        motors = TCC_to_motor(location_matrix[idx])
+        return *motors, delay_matrix[idx]
 
-    if location == 'Location1':
-        motor1, motor2, motor3, motor4, motor5, motor6 = TCC_to_motor(location_matrix[0])
-        return motor1, motor2, motor3, motor4, motor5, motor6, delay_matrix[0]
+file = open('actionlist-tsline.txt', 'w')
+    file.write("Motor1:PositionInput\tMotor2:PositionInput\tMotor3:PositionInput\tMotor4:PositionInput\tMotor5:PositionInput\tMotor6:PositionInput\tTS:1w2wDelay\tTS:Shutter\t13PICAM2:cam1:RepetitiveGateDelay\n"
+               "Motor1:PositionRead\tMotor2:PositionRead\tMotor3:PositionRead\tMotor4:PositionRead\tMotor5:PositionRead\tMotor6:PositionRead\tTS:1w2wDelay\tTS:Shutter\t13PICAM2:cam1:RepetitiveGateDelay_RBV\n")
 
-    if location == 'Location2':
-        motor1, motor2, motor3, motor4, motor5, motor6 = TCC_to_motor(location_matrix[1])
-        return motor1, motor2, motor3, motor4, motor5, motor6, delay_matrix[1]
+motor_positions = desired_positions('Location 4', 70)
+blowoff_delay = 1120
 
-    if location == 'Location3':
-        motor1, motor2, motor3, motor4, motor5, motor6 = TCC_to_motor(location_matrix[2])
-        return motor1, motor2, motor3, motor4, motor5, motor6, delay_matrix[2]
+delay_total = len(motor_positions[6])
+print(motor_positions)
 
-    if location == 'Location4':
-        motor1, motor2, motor3, motor4, motor5, motor6 = TCC_to_motor(location_matrix[3])
-        return motor1, motor2, motor3, motor4, motor5, motor6, delay_matrix[3]
+print(motor_positions[6], 'These are the delays')
 
-    if location == 'Location5':
-        motor1, motor2, motor3, motor4, motor5, motor6 = TCC_to_motor(location_matrix[4])
-        return motor1, motor2, motor3, motor4, motor5, motor6, delay_matrix[4]
-
-    if location == 'Location6':
-        motor1, motor2, motor3, motor4, motor5, motor6 = TCC_to_motor(location_matrix[5])
-        return motor1, motor2, motor3, motor4, motor5, motor6, delay_matrix[5]
-
-
-
+for delay in range(len(motor_positions[6])):
+    for repitition in range(repititions):
+        file.write("{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.0f}\t{:.0f}\t{:.0f}\n".format(motor_positions[0], motor_positions[1], motor_positions[2], motor_positions[3], motor_positions[4], motor_positions[5], motor_positions[6][delay],0, blowoff_delay))
+        file.write("{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.0f}\t{:.0f}\t{:.0f}\n".format(motor_positions[0], motor_positions[1], motor_positions[2], motor_positions[3], motor_positions[4], motor_positions[5], motor_positions[6][delay],0, blowoff_delay))
+        file.write("{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.0f}\t{:.0f}\t{:.0f}\n".format(motor_positions[0], motor_positions[1], motor_positions[2], motor_positions[3], motor_positions[4], motor_positions[5], motor_positions[6][delay],1, blowoff_delay))
+        file.write("{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.0f}\t{:.0f}\t{:.0f}\n".format(motor_positions[0], motor_positions[1], motor_positions[2], motor_positions[3], motor_positions[4], motor_positions[5], motor_positions[6][delay],1, blowoff_delay))
+        blowoff_delay += 10
 
 
 if __name__ == "__main__":
-    repititions = 5
-
-    file = open('actionlist-tsline.txt', 'w')
-    file.write("TS:1w2wDelay\tTS:Shutter\t13PICAM2:cam1:RepetitiveGateDelay\n"
-               "TS:1w2wDelay\tTS:Shutter\t13PICAM2:cam1:RepetitiveGateDelay_RBV\n")
-
-    motor_positions = desired_positions('Location4', 70)
-    blowoff_delay = 1120
-
-    delay_total = len(motor_positions[6])
-
-
-    print(motor_positions[6], 'These are the delays')
-
-    for delay in range(len(motor_positions[6])):
-        for repitition in range(repititions):
-            file.write("{:.0f}\t{:.0f}\t{:.0f}\n".format(motor_positions[6][delay],0, blowoff_delay))
-            file.write("{:.0f}\t{:.0f}\t{:.0f}\n".format(motor_positions[6][delay],0, blowoff_delay))
-            file.write("{:.0f}\t{:.0f}\t{:.0f}\n".format(motor_positions[6][delay],1, blowoff_delay))
-            file.write("{:.0f}\t{:.0f}\t{:.0f}\n".format(motor_positions[6][delay],1, blowoff_delay))
-            blowoff_delay += 10
+    base_parser = argparse.ArgumentParser(add_help = False)
+    base_parser.add_argument()
 
 
 
