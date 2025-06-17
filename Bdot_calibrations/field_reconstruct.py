@@ -120,11 +120,29 @@ def reconstruct(data, voltages, times, gain, b_0, correct_drift: bool = False):
     voltages_integrated = cumulative_trapezoid(voltages, x=times, initial=0)
     print(len(voltages_integrated), 'Voltages integrated')
     print(len(voltages), 'Voltage')
+    print(voltages[0].size)
     for i in range(len(voltages_integrated)):
         field[i+1] = const1 * (voltages_integrated[i] + (tau_s * voltages[i])) + const2
 
     return field
 
+
+def reconstruc2(voltages, times, gain, b_0):
+    a = 4.9199e-05
+    tau = -1.999e-08
+    tau_s = -1.9618e-08
+    N = 1
+
+    const1 = 1 / (a * N * gain)
+    const2 = b_0 - tau
+    #field = np.zeros_like(voltages)
+    average_volts = np.average(voltages, axis = 0)
+    time_average = np.average(times, axis = 0)
+
+    voltages_integrated = cumulative_trapezoid(average_volts, x = time_average, initial=0)
+
+    field = const1 * (voltages_integrated + (tau_s * average_volts)) + const2
+    return field
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def reconstruct_array(data, volts_arr, times_arr, gain, b_0: float =0, **kwargs):
@@ -157,8 +175,8 @@ if __name__ == "__main__":
     b_0 = 0
     
 
-    field = reconstruct(calibration_data, voltages, times, gain, b_0)
-    field_array = reconstruct_array(data, voltages, times, gain, b_0)
-    print(field_array)
-    plt.plot(field_array)
+    field = reconstruc2(voltages, times, gain, b_0)
+    re_array = reconstruct_array()
+    print(field)
+    plt.plot(field)
     plt.show()
