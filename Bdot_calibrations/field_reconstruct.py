@@ -96,7 +96,7 @@ def calibrate(data):
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------    
 
-def reconstruct(data, voltages, times, gain, b_0, correct_drift: bool = False):
+def reconstruct(voltages, times, gain, b_0, correct_drift: bool = False):
     '''
     a: It is the area of the probe. It is attained from the calibration function
     N is the number of turns in the probe
@@ -125,7 +125,7 @@ def reconstruct(data, voltages, times, gain, b_0, correct_drift: bool = False):
         field[i+1] = const1 * (voltages_integrated[i] + (tau_s * voltages[i])) + const2
 
     return field
-
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def reconstruc2(voltages, times, gain, b_0):
     a = 4.9199e-05
@@ -155,12 +155,31 @@ def reconstruct_array(data, volts_arr, times_arr, gain, b_0: float =0, **kwargs)
         field_row = reconstruct(data, row, times_arr[i], gain, b_0[i], kwargs)
         field_arr.append(field_row)
     return np.array(field_arr)
-
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------
+def magnetic_field(volts_arr, times_arr, gain, b_0):
+    pass
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     calibration_data = '1INCAP_2.TXT'
     filename = 'magnet-calibration-pat-ground-2025-05-27.h5'
     data = h5py.File(filename, 'r')
+
+    voltages = data['MSO24:Ch4:Trace']
+    times = data['MSO24:Time']
+    gain = 10
+    b_0 = 0
+    real, imaginary, clean_data = predict_re_im(calibration_data, 4.9199e-05, -1.99e-08, -1.9618e-08)
+
+
+    a, tau, tau_s = calibrate(calibration_data)
+    print(a,tau,tau_s)
+
+
+
+
+
+
 
     #The first step is to find the calibration parameters of the file.
     #clean = data_clean(calibration_data)
@@ -169,14 +188,11 @@ if __name__ == "__main__":
     #w = 2 *np.pi * clean['Frequency']
     #a_, tau, tau_s = calibrate(calibration_data)
     #print(a_)
-    voltages = data['MSO24:Ch4:Trace']
-    times = data['MSO24:Time']
-    gain = 10
-    b_0 = 0
-    
+
 
     field = reconstruc2(voltages, times, gain, b_0)
-    re_array = reconstruct_array()
+    #re_array = reconstruct_array()
     print(field)
     plt.plot(field)
+    plt.title('Reconstructed array averaged - Enrique')
     plt.show()
