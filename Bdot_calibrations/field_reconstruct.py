@@ -175,12 +175,6 @@ if __name__ == "__main__":
     a, tau, tau_s = calibrate(calibration_data)
     print(a,tau,tau_s)
 
-
-
-
-
-
-
     #The first step is to find the calibration parameters of the file.
     #clean = data_clean(calibration_data)
     
