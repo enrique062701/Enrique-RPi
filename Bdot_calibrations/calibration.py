@@ -147,3 +147,28 @@ if __name__ == "__main__":
     plt.xlabel('Positions (cm)')
     plt.ylabel('Field (T)')
     plt.show()
+
+
+
+    ##Doing the 600V
+    filename = f'{file_path}/magnetZscan-10cm_Vscan-2025-06-16.h5'
+    Data_file = h5py.File(filename, 'r')
+
+    MSO_voltage = np.array(Data_file['MSO24:Ch4:Trace'])
+    MSO_time = np.array(Data_file['MSO24:Time'])
+    print(MSO_voltage[50:60])
+    print(MSO_time.shape)
+    voltage_600V = MSO_voltage[50:60]
+    time_600V = MSO_time[50:60]
+    
+
+    field_600 = B_field_reconstruct(voltage_600V, time_600V, -0.000447134918, 1, 1, -3.1174319180e-08, average = True)
+    print(voltage_600V.shape)
+    print(time_600V.shape)
+    plt.plot(time_600V[0], field_600, label = 'Magnetic field')
+    plt.legend()
+    plt.title('Magnetic field - 600V')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Field (T)')
+    plt.show()
+    print(np.max(field_600))

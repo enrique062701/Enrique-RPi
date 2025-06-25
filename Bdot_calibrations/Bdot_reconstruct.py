@@ -105,7 +105,9 @@ class Bdot_actions(Data_cleaner):
         for i in range(len(voltage_average)):
             field = 1/A * (voltage_integrated[i] + self.tau_s * voltage_average[i]) + initial_conditon
             fields.append(field)
+        return fields
 
+        
 
 class Plotting_Functions(Data_cleaner):
     def __init__(self, *args, **kwargs):
