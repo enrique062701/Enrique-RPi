@@ -55,7 +55,7 @@ def B_field_reconstruct(voltage, time, a, g, N, tau_s, average):
         for i in range(len(voltage_average)):
             field = 1/A * (voltage_integrated[i] + tau_s * voltage_average[i]) + initial_conditon
             fields.append(field)
-
+        print(len(fields), 'This is the length of the array')
         return fields
     else:
         A2 = a * N * g 
@@ -100,7 +100,7 @@ if __name__ == "__main__":
 
 
     #Will now plot the position vs voltage plot for 100V
-    file_path = '/mnt/shared/'
+    file_path = '/home/phoenix/Enrique-RPi/Bdot_calibrations/magnet_data'
     positions = np.arange(0,22, 1)
     voltage_list = []
     time_list = []
@@ -142,11 +142,21 @@ if __name__ == "__main__":
         voltage_list2.append(voltage)
         time_list2.append(time)
     plt.plot(positions, field_max2, label = 'field strength')
+    plt.scatter(positions, field_max2, label = 'field strength scatter', color = 'red')
+    print(field_max2[0], 'This is the first data point')
     plt.legend()
     plt.title('Position vs Field - 1 coil: 100V')
     plt.xlabel('Positions (cm)')
     plt.ylabel('Field (T)')
     plt.show()
+
+    weird_one = f'{file_path}/magnetZscan-1coil-100V-0cm-2025-06-16.h5'
+    data_w = h5py.File(weird_one, 'r')
+    voltage = np.array(data_w['MSO24:Ch4:Trace'])
+    time = np.array(data_w['MSO24:Time'])
+    for i in range(len(voltage)):
+        plt.plot(time[0], voltage[i], label = 'trace{i}')
+        plt.show()
 
 
 
