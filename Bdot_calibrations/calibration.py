@@ -8,6 +8,7 @@ import os
 import h5py
 from scipy.integrate import cumulative_trapezoid
 
+#-------------------------------------------------------------------------------------------------------------------------------
 #Implementing the data clean function to clean the calibration data
 def data_clean(data_path):
     '''
@@ -55,7 +56,7 @@ def B_field_reconstruct(voltage, time, a, g, N, tau_s, average):
         for i in range(len(voltage_average)):
             field = 1/A * (voltage_integrated[i] + tau_s * voltage_average[i]) + initial_conditon
             fields.append(field)
-        print(len(fields), 'This is the length of the array')
+        
         return fields
     else:
         A2 = a * N * g 
@@ -68,6 +69,7 @@ def B_field_reconstruct(voltage, time, a, g, N, tau_s, average):
             fields2.append(field2)
         return fields2
 
+#-------------------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
 
     OneInchCalibration = '1INCAP_2.TXT'
@@ -90,6 +92,7 @@ if __name__ == "__main__":
     plt.legend()
     plt.show()
 
+#-------------------------------------------------------------------------------------------------------------------------------
     #This uses the calibration parameters using my own calibration method
     field2 = B_field_reconstruct(np.array(Data_file["MSO24:Ch4:Trace"]), np.array(Data_file["MSO24:Time"]), -7.919e-05, 1, 1, -1.9618e-08, average = True)
     #print(field2.shape, 'Field 2')
@@ -99,6 +102,7 @@ if __name__ == "__main__":
     print('Test 3')
 
 
+#-------------------------------------------------------------------------------------------------------------------------------
     #Will now plot the position vs voltage plot for 100V
     file_path = '/home/phoenix/Enrique-RPi/Bdot_calibrations/magnet_data'
     positions = np.arange(0,22, 1)
@@ -111,12 +115,25 @@ if __name__ == "__main__":
         Data_file = h5py.File(filename, 'r')
         voltage = np.array(Data_file['MSO24:Ch4:Trace'])
         time = np.array(Data_file['MSO24:Time'])
-        field = B_field_reconstruct(voltage, time, -0.000447134918, 1, 1, -3.1174319180e-08, average = True)
-        max_ = np.max(field)
-        field_max.append(max_)
-        field_list.append(field)
-        voltage_list.append(voltage)
-        time_list.append(time)
+
+        if filename == f'{file_path}/magnetZscan-21cm-2025-06-16.h5':
+            print('It went throught the if statement')
+            voltage_clean = voltage[2:9]
+            time_clean = time[2:9]
+            field = B_field_reconstruct(voltage_clean, time_clean, -0.000447134918, 1, 1, -3.1174319180e-08, average = True)
+            max_ = np.max(field)
+            print(max_, 'This is the max for this case')
+            field_max.append(max_)
+            field_list.append(field)
+            voltage_list.append(voltage_clean)
+            time_list.append(time_clean)
+        else:
+            field = B_field_reconstruct(voltage, time, -0.000447134918, 1, 1, -3.1174319180e-08, average = True)
+            max_ = np.max(field)
+            field_max.append(max_)
+            field_list.append(field)
+            voltage_list.append(voltage)
+            time_list.append(time)
 
     plt.plot(positions, field_max, label = 'field strength')
     plt.legend()
@@ -126,6 +143,7 @@ if __name__ == "__main__":
     plt.show()
 
 
+#-------------------------------------------------------------------------------------------------------------------------------
     voltage_list2 = []
     time_list2 = []
     field_list2 = []
@@ -135,12 +153,23 @@ if __name__ == "__main__":
         Data_file = h5py.File(filename, 'r')
         voltage = np.array(Data_file['MSO24:Ch4:Trace'])
         time = np.array(Data_file['MSO24:Time'])
-        field = B_field_reconstruct(voltage, time, -0.000447134918, 1, 1, -3.1174319180e-08, average = True)
-        max_ = np.max(field)
-        field_max2.append(max_)
-        field_list2.append(field)
-        voltage_list2.append(voltage)
-        time_list2.append(time)
+        if filename == f'{file_path}/magnetZscan-1coil-100V-0cm-2025-06-16.h5':
+            voltage_clean = voltage[:10]
+            time_clean = time[:10]
+            field = B_field_reconstruct(voltage_clean, time_clean, -0.000447134918, 1, 1, -3.1174319180e-08, average = True)
+            max_ = np.max(field)
+            field_max2.append(max_)
+            field_list2.append(field)
+            voltage_list2.append(voltage)
+            time_list2.append(time)
+            
+        else:
+            field = B_field_reconstruct(voltage, time, -0.000447134918, 1, 1, -3.1174319180e-08, average = True)
+            max_ = np.max(field)
+            field_max2.append(max_)
+            field_list2.append(field)
+            voltage_list2.append(voltage)
+            time_list2.append(time)
     plt.plot(positions, field_max2, label = 'field strength')
     plt.scatter(positions, field_max2, label = 'field strength scatter', color = 'red')
     print(field_max2[0], 'This is the first data point')
@@ -150,16 +179,24 @@ if __name__ == "__main__":
     plt.ylabel('Field (T)')
     plt.show()
 
-    weird_one = f'{file_path}/magnetZscan-1coil-100V-0cm-2025-06-16.h5'
+#-------------------------------------------------------------------------------------------------------------------------------
+    #Looking through 
+    file_number = 20
+
+    weird_one = f'{file_path}/magnetZscan-{file_number}cm-2025-06-16.h5'
     data_w = h5py.File(weird_one, 'r')
+    print()
     voltage = np.array(data_w['MSO24:Ch4:Trace'])
     time = np.array(data_w['MSO24:Time'])
+    max_field = []
     for i in range(len(voltage)):
-        plt.plot(time[0], voltage[i], label = 'trace{i}')
+        plt.plot(time[0], voltage[i], label = f'trace{i}')
+        plt.title(f'Trace {i} for {file_number}')
         plt.show()
 
 
 
+#-------------------------------------------------------------------------------------------------------------------------------
     ##Doing the 600V
     filename = f'{file_path}/magnetZscan-10cm_Vscan-2025-06-16.h5'
     Data_file = h5py.File(filename, 'r')

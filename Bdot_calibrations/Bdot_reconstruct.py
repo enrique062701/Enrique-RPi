@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from io import StringIO
 import h5py
-import scipy.integrate import cumulative_trapezoid
+from scipy.integrate import cumulative_trapezoid
 
 '''
 This file calibrates and reconstructs the bdot and bfield. Object oriented programming because it will be used
@@ -17,9 +17,10 @@ class Data_cleaner:
     This class calls all the calibration functions. So far it is only for the 1axis Bdot because it is essential
     to calibrate the magnetic field. Will add more in the future. Must pass both together
     """
-    def __init__(self, calibration_data, HDF5_data):
+    def __init__(self, calibration_data, HDF5_data_):
         self.calibration_data = calibration_data
-        self.HDF5_data = HDF5_data
+        self.HDF5_data = h5py.File(HDF5_data_, 'r')
+        
 
     def clean_data_cal(self):
         """
@@ -46,6 +47,8 @@ class Data_cleaner:
             MSO24_Ch1 = position10_100V.MSO24_Ch1
 
         """
+        
+            
         self.LeCroy_Ch1 = np.array(self.HDF5_data['LeCroy:Ch1:Trace'])
         self.LeCroy_Ch2 = np.array(self.HDF5_data['LeCroy:Ch2:Trace'])
         self.LeCroy_Ch3 = np.array(self.HDF5_data['LeCroy:Ch3:Trace'])
@@ -58,11 +61,10 @@ class Data_cleaner:
         self.MSO24_Ch4 = np.array(self.HDF5_data['MSO24:Ch4:Trace'])
         self.MSO24_time = np.array(self.HDF5_data['MSO24:Time'])
 
-        self.MDO30_Ch1 = np.array(self.HDF5_data['MDO30:Ch1:Trace'])
-        self.MDO30_Ch2 = np.array(self.HDF5_data['MDO30:Ch2:Trace'])
-        self.MDO30_Ch3 = np.array(self.HDF5_data['MDO30:Ch3:Trace'])
-        self.MDO30_Ch4 = np.array(self.HDF5_data['MDO30:Ch4:Trace'])
-        self.MDO30_time = np.array(self.HDF5_data['MDO30:Time'])
+        #self.MDO30_Ch1 = np.array(self.HDF5_data['MDO30:Ch1:Trace'])
+        #self.MDO30_Ch2 = np.array(self.HDF5_data['MDO30:Ch2:Trace'])
+        #self.MDO30_Ch3 = np.array(self.HDF5_data['MDO30:Ch3:Trace'])
+        ##self.MDO30_time = np.array(self.HDF5_data['MDO30:Time'])
 
 
 
@@ -85,13 +87,17 @@ class Bdot_actions(Data_cleaner):
             field: The reconstructed B-field. Uses equation 10 from Eric Everson's Bdot paper.
         """
         defaults = {
-            a = -0.000447134918
-            g = 1
-            N = 1
-            tau_s = -3.1174319180e-08
+            'a': -0.000447134918,
+            'g': 1,
+            'N': 1,
+            'tau_s': -3.1174319180e-08,
         }
-        for key, default_value in defaults.items():
-            setattr(self, key, kwargs.get(key, default_value))            
+        params = {key:kwargs.get(key, default) for key, default in defaults.items()}
+        
+        a = params['a']
+        g = params['g']
+        N = params['N']
+        tau_s = params['tau_s']
 
         voltage_average = np.average(voltage, axis = 0)
         time_average = np.average(time, axis = 0)
@@ -99,13 +105,24 @@ class Bdot_actions(Data_cleaner):
         noise = np.average(voltage_average[:20])
         voltage_average = voltage_average - noise
 
-        A = self.a * self.N * self.g
-        initial_conditon = 0 - tau_s * (1/A) * voltage_average #It is 0 (-) because the initial b-field is zero
         fields = []
-        for i in range(len(voltage_average)):
-            field = 1/A * (voltage_integrated[i] + self.tau_s * voltage_average[i]) + initial_conditon
+        A = a * N * g
+        for trace in range(len(voltage)):
+            noise = np.average(voltage[trace][:20])
+            voltage_clean = voltage[trace] - noise
+
+            initial_conditon = - tau_s * (1/A) * voltage_clean
+            voltage_integrated = cumulative_trapezoid(voltage_clean, time[trace], initial = 0)
+
+            field = 1/A * (voltage_integrated + tau_s * voltage_clean) + initial_conditon
             fields.append(field)
-        return fields
+        field_average = np.average(fields, axis = 0)
+
+        return field_average
+
+
+
+        
 
         
 

@@ -10,6 +10,8 @@ def B_field_reconstruct(voltage, time, a, g, N, tau_s):
     data trace.
 
     --Edit: Instead of averaging first, it will integrate first and then average.
+
+    NOTE:TURNS OUT IT IS BETTER TO GET THE MAX FROM THE AVERAGE MAX FIELD.
     '''
     #Will first integrate over each data point and then average it out to get std and plot error bar
     fields = []
@@ -43,7 +45,8 @@ def plotting_func(voltage, time, fields_tuple, **kwargs):
     average_max = fields_tuple[2]
     field_std = fields_tuple[3]
 
-    arguments = kwargs.get(key)
+    arguments = kwargs.items()
+
 
 
 
@@ -77,8 +80,4 @@ if __name__ == "__main__":
     plt.legend()
     plt.show()
 
-    #Now for the position vs field 
-    #for i in range(positions):
-    #    filename = f'{file_path}/magnetZscan-{i}cm-2025-06-16.h5'
-    #    Da
-        
+  
