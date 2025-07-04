@@ -45,6 +45,8 @@ class Data_cleaner:
             position10_100V.LeCroy_Ch1 --> Or any channel. Can call any channel like this
         Can also assign each channel to its own variable so that you do not have to type the whole thing:
             MSO24_Ch1 = position10_100V.MSO24_Ch1
+        
+        Add error handling. If one of the scopes isnt active then make sure it does not crash
 
         """
         

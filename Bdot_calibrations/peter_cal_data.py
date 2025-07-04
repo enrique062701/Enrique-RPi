@@ -41,6 +41,7 @@ if __name__ == "__main__":
     positions = np.arange(0,22, 1)
 
     magnet_current = []
+    current_max_array = []
     voltage_list = []
     time_list = []
     field_list = []
@@ -58,8 +59,10 @@ if __name__ == "__main__":
             time_clean = time[:10]
             current_clean = current[:10]
             ave_current = np.average(current_clean, axis = 0)
+            ave_time = np.average(time_clean, axis = 0)
             current_max = np.max(ave_current)
-            magnet_current.append(current_max) #This is to attain the average max current at each position
+            current_max_array.append(current_max) #This is to attain the average max current at each position
+            magnet_current.append(ave_current)
 
             field = B_field_reconstruct(voltage_clean, time_clean, -0.000447134918, 1, 1, -3.1174319180e-08)
             max_ = np.max(field[0])
@@ -68,11 +71,13 @@ if __name__ == "__main__":
             field_list.append(field[0])
             
             voltage_list.append(voltage_clean)
-            time_list.append(time_clean)
+            time_list.append(ave_time)
         else:
             ave_current = np.average(current, axis = 0)
             current_max = np.max(ave_current)
-            magnet_current.append(current_max)
+            current_max_array.append(current_max)
+            magnet_current.append(ave_current)
+            ave_time = np.average(time, axis = 0)
             
             field_test = B_field_reconstruct(voltage, time, -0.000447134918, 1, 1, -3.1174319180e-08)
             max_ = np.max(field_test[0])
@@ -80,29 +85,59 @@ if __name__ == "__main__":
             max_test.append(field_test[1])
             field_list.append(field_test[0])
             voltage_list.append(voltage)
-            time_list.append(time)
+            time_list.append(ave_time)
 
+    
     plt.plot(positions, field_max, label = 'Max Field Curve', color = 'blue')
     plt.scatter(positions, field_max, label = 'Max Field Points', color = 'Red')
     plt.legend()
-    plt.title('Position vs Field - 1 coil, 100V')
+    plt.title('Field vs Position - 1 coil 100V')
     plt.xlabel('Positions (cm)') 
     plt.ylabel('Field (T)')
     plt.show()
 #-------------------------------------------------------------------------------------------------------------------------------
     #Now to plot the current at each point 
-    plt.plot(positions, magnet_current, label = 'Max current curve', color = 'blue')
-    plt.scatter(positions, magnet_current, label = 'Max current at each position', color = 'red')
-    print(np.average(magnet_current[:10]), ':Is the max current for 1 coil')
-    print(f'If current is Ch1 * 1000, then average current is {np.average(magnet_current[:10]) * 1000} A')
+    current_max_scaled = np.array(current_max_array) * 1000
+    plt.plot(positions, current_max_scaled , label = 'Max current curve', color = 'blue')
+    plt.scatter(positions, current_max_scaled , label = 'Max current at each position', color = 'red')
+    print(np.average(current_max_scaled[:10]), ':Is the max current for 1 coil')
+    print(f'If current is Ch1 * 1000, then average current is {np.average(current_max_array[:10]) * 1000} A')
 
     plt.legend()
-    plt.title('Position vs Magnet Current')
+    plt.title('Current vs Position - 1 coil 100V')
     plt.xlabel('Position (cm)')
     plt.ylabel('Current (A)')
     plt.show()
+    
+    ave_time_list = np.average(time_list, axis = 0)
+    mag_ave = np.average(magnet_current, axis = 0)
+
+    plt.plot(ave_time_list * 1000, mag_ave * 1000, label = 'Average Current', color = 'blue')
+    plt.xlabel('Time (ms)')
+    plt.ylabel('Current (A)')
+    plt.title('Average Current vs Time - 1 coil 100V')
+    plt.legend()
+    plt.show()
+
+    
+    magnet_current = []
+    current_max_array = []
+    voltage_list = []
+    time_list = []
+    field_list = []
+    field_max = []
+    max_test = []
+
+    magnet_current_array = np.array(magnet_current)
+    current_max_array = np.array(current_max_array)
+    voltage_list_array = np.array(voltage_list)
+    time_list_array = np.array(time_list)
+    field_list_array = np.array(field_list)
+    field_max_array = np.array(field_max)
+    max_test_array = np.array(max_test)
+
+    np.savez('1_coil_data.npz',magnet_current_array,current_max_array,voltage_list_array, time_list_array,
+    field_list_array,field_max_array, max_test_array )
 
 
-
-
-
+    np.savez('distance_vs_B-field.npz', positions, field_max)
