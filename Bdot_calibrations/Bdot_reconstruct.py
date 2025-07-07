@@ -15,12 +15,30 @@ Author: Enrique
 class Data_cleaner:
     """
     This class calls all the calibration functions. So far it is only for the 1axis Bdot because it is essential
-    to calibrate the magnetic field. Will add more in the future. Must pass both together
+    to calibrate the magnetic field. Will add more in the future. Must pass both together. Adding the follwing methods to allow the 
+    class to be iterable and be used as a dictionary for better handling.
     """
     def __init__(self, calibration_data, HDF5_data_):
         self.calibration_data = calibration_data
         self.HDF5_data = h5py.File(HDF5_data_, 'r')
-        
+
+    def __getitem__(self, key):
+        return self.HDF5_data[key]
+
+    def __iter__(self):
+        return iter(self.HDF5_data)
+
+    def __contains__(self, key):
+        return key in self.HDF5_data
+
+    def keys(self):
+        return self.HDF5_data.keys()
+
+    def items(self):
+        self.HDF5_data.items()
+
+    def values(self):
+        return self.HDF5_data.values()        
 
     def clean_data_cal(self):
         """
@@ -49,31 +67,14 @@ class Data_cleaner:
         Add error handling. If one of the scopes isnt active then make sure it does not crash
 
         """
-        
-            
-        self.LeCroy_Ch1 = np.array(self.HDF5_data['LeCroy:Ch1:Trace'])
-        self.LeCroy_Ch2 = np.array(self.HDF5_data['LeCroy:Ch2:Trace'])
-        self.LeCroy_Ch3 = np.array(self.HDF5_data['LeCroy:Ch3:Trace'])
-        self.LeCroy_Ch4 = np.array(self.HDF5_data['LeCroy:Ch4:Trace'])
-        self.LeCroy_time = np.array(self.HDF5_data['LeCroy:Time'])
-
-        self.MSO24_Ch1 = np.array(self.HDF5_data['MSO24:Ch1:Trace'])
-        self.MSO24_Ch2 = np.array(self.HDF5_data['MSO24:Ch2:Trace'])
-        self.MSO24_Ch3 = np.array(self.HDF5_data['MSO24:Ch3:Trace'])
-        self.MSO24_Ch4 = np.array(self.HDF5_data['MSO24:Ch4:Trace'])
-        self.MSO24_time = np.array(self.HDF5_data['MSO24:Time'])
-
-        #self.MDO30_Ch1 = np.array(self.HDF5_data['MDO30:Ch1:Trace'])
-        #self.MDO30_Ch2 = np.array(self.HDF5_data['MDO30:Ch2:Trace'])
-        #self.MDO30_Ch3 = np.array(self.HDF5_data['MDO30:Ch3:Trace'])
-        ##self.MDO30_time = np.array(self.HDF5_data['MDO30:Time'])
-
+        for key, array in self.HDF5_data.items():
+            attr_name = key.replace(':', '_')
+            setattr(self, attr_name, np.array(array))
 
 
 class Bdot_actions(Data_cleaner):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
+    def __init__(self, data_cleaner_instance, **kwargs):
+        self.data = data_cleaner_instance
     def B_field_reconstruct(voltage, time, **kwargs):
         """
         Function takes in the voltage and time and then averages it to find the average field for the run
@@ -124,10 +125,32 @@ class Bdot_actions(Data_cleaner):
 
 
 
-        
-
-        
-
 class Plotting_Functions(Data_cleaner):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, data_cleaner_instance, **kwargs):
+        self.data = data_cleaner_instance #Allows you to access all the data that has been inputted into Data_cleaner
+
+    def max_b_field(self, **kwargs):
+        """
+        Function is called on itself. This function gives out the max B-field of the run. Must specify which channel the B-dot was connected too.
+        Params:
+            **kwargs: This helps specify which channel Bdot is in. If not specified, used MSO:Ch4:Trace as default.
+            Calls on the B_field_reconstruct function to 
+        """
+        plt.figure(figsize = (7,10))
+        channels = kwargs.get('Channels') #Can set it equal to a value to attain the values in the list
+        if channels:
+            if len(channels) != 2:
+                raise ValueError("You must pass only voltage and time values")
+            voltage_key, time_key = channels
+            if voltage_key not in self.data or time_key not in self.data:
+                raise KeyError(f"Channel not found in data: {channels}")
+
+            voltage = self.data[voltage_key]
+            time = self.data[time_key]
+            field_average = Bdot_actions.B_field_reconstruct(voltage, time)
+        else:
+            voltage = self.data.MSO24_Ch4_Trace
+            time = self.data.MSO24_Time
+            field_average = Bdot_actions.B_field_reconstruct(voltage, time)
+
+        return field_average

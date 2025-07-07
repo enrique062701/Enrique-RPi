@@ -4,7 +4,7 @@ data without having to do so much code. Simplifies and streamlines data reading 
 """
 
 import numpy as np
-from Bdot_reconstruct import Data_cleaner, Bdot_actions
+from Bdot_reconstruct import Data_cleaner, Bdot_actions, Plotting_Functions
 import matplotlib.pyplot as plt
 
 
@@ -13,40 +13,15 @@ run_data = "magnet-calibration-pat-ground-2025-05-27.h5"
 #This is how you call the data
 Run1_data = Data_cleaner(calibration_data, run_data)
 Run1_data.oscilloscope_data()
-MSO24_Ch4 = Run1_data.MSO24_Ch4
-MSO24_time = Run1_data.MSO24_time
+MSO24_Ch4 = Run1_data.MSO24_Ch4_Trace
+MSO24_time = Run1_data.MSO24_Time
 print(type(MSO24_Ch4), 'Type for Ch4')
+Bdot = Bdot_actions(Run1_data)
 
 field = Bdot_actions.B_field_reconstruct(MSO24_Ch4, MSO24_time)
-print(field)
+print(field, 'This is the field')
 
-plt.plot(field)
-plt.show()
-
-volts = []
-time = []
-field = []
-field_max = []
-field_list = []
-file_path = '/home/phoenix/Enrique-RPi/Bdot_calibrations/magnet_data'
-positions = np.arange(0,22,1)
-for i in range(22):
-    filename = f'{file_path}/magnetZscan-{i}cm-2025-06-16.h5'
-    data = Data_cleaner(calibration_data, filename)
-    data.oscilloscope_data()
-
-    voltage = data.MSO24_Ch1
-    time = data.MSO24_time
-    field = Bdot_actions.B_field_reconstruct(voltage, time)
-    max_ = np.max(field)
-    print(max_, 'This is the max for this case')
-    field_max.append(max_)
-    field_list.append(field)
-    volts.append(voltage)
-    time.append(time)
-
-plt.plot(positions, field_max, label = 'Field strength')
-plt.legend()
-plt.show()
-
+plot = Plotting_Functions(Run1_data)
+max_b_field = plot.max_b_field(Channels = ['LeCroy:Ch1:Trace', 'LeCroy:Ch2:Trace'])
+print(max_b_field)
 
