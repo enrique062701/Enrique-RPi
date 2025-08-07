@@ -39,22 +39,32 @@ global command
 
 BASE_URL = "http://xxx.xxx.xxx.xxx:xxxx/REST/HTTP_CMD"
 BASE_URL_2 = "http://xxx.xxx.xxx.xxx:xxxx"
-USER = "NT230Laser:"
+USER = "XXXXXX:"
 # Next define the main PVs that we will be using for the laser
+print("Defining PVs...")
 laser_wavelength = epics.PV(USER+"Wavelength")
 laser_wavelength_RBV = epics.PV(USER+"WavelengthRBV")
 laser_burstlength = epics.PV(USER+"Burstlength")
 laser_burstlength_RBV = epics.PV(USER+"BurstlengthRBV")
-laser_status = epics.PV(USER+"Status")
+laser_status = epics.PV(USER+"STATE")
+laser_temp = epics.PV(USER+"Temperature")
+lifetime_shots = epics.PV(USER+"LifetimeShots")
+laser_trigger_type = epics.PV(USER+"TriggerType")
+laser_trigger_typeRBV = epics.PV(USER+"TriggerTypeRBV")
+phoenix_epoch = epics.PV("phoeniX:epoch") #To check temp and other diagnostics every second
 
-
+print(f"Connecting to PV's...")
 laser_wavelength.connect(timeout = 5)
 laser_wavelength_RBV.connect(timeout = 5)
 laser_burstlength.connect(timeout = 5)
 laser_burstlength_RBV.connect(timeout = 5)
 laser_status.connect(timeout = 5)
-
-
+laser_temp.connect(timeout = 5)
+lifetime_shots.connect(timeout = 5)
+laser_trigger_type.connect(timeout = 5)
+laser_burstlength_RBV.connect(timeout = 5)
+phoenix_epoch.connect(timeout = 5)
+print("Connection Successful!")
 ############################################################################################################
 # Next is to define the functions that will be used.
 def write_pv(pv, value):
@@ -77,16 +87,22 @@ def read_command(command):
     Return:
         Returns the value of the desired value
     """
-    #if type(command) != str:
-    #    raise TypeError('Command must be in string!!')
-
-    pattern = r'<br>\s*(.*?)\s*<br>' #The pattern to remove html and attain the raw strings only.
-    link = urlopen(BASE_URL + command)
-    webpage = link.read().decode("utf-8")
-
-    clean = re.search(pattern, webpage)
-    response = float(clean.group(1))
-    return response
+    command = str(command)
+    if "?" in command:
+        #This is to see whether the first or second url method is used instead of making a new function with new patterns.
+        pattern = r'<br>\s*(.*?)\s*<br>' #The pattern to remove html and attain the raw strings only.
+        link = urlopen(BASE_URL + command)
+        webpage = link.read().decode("utf-8")
+        clean = re.search(pattern, webpage)
+        response = clean.group(1)
+        return response
+    else:
+        pattern = r'<td id=V1>([\d.]+)C</td>'
+        link = urlopen(BASE_URL_2 + command)
+        webpage = link.read().decode("utf-8")
+        clean = re.search(pattern, webpage)
+        response = clean.group(1)
+        return response
 
 
 def change_wavelength_callback(pvname = None, value = None, char_value = None, **kwargs):
@@ -97,20 +113,19 @@ def change_wavelength_callback(pvname = None, value = None, char_value = None, *
     try:
         if not (210.0 <= value <= 2600.0):
             raise KeyError(f"{value} is out of range. Choose wavelength between 210nm - 2600nm")
-
-        #value_str = str(value)
-        command = f"{BASE_URL}/?EXE/SetWL/{value}"
-        urlopen(command)
-        time.sleep(0.05) #Must wait 0.05 seconds before trying to read the callback value.
-        # To check if the value updated:
-        command_rbv = f"/?RDVAR/Wavelength"
-        response = read_command(command_rbv)
-        write_pv(laser_wavelength_RBV, response)
-
-        if value != response:
-            raise ValueError("The wavelength did not change. Try again.")
         else:
-            print(f"The wavelength has been set to: {response}")
+            #value_str = str(value)
+            command = f"{BASE_URL}/?EXE/SetWL/{value}"
+            urlopen(command)
+            time.sleep(0.05) #Must wait 0.05 seconds before trying to read the callback value.
+            # To check if the value updated:
+            command_rbv = f"/?RDVAR/Wavelength"
+            response = float(read_command(command_rbv))
+            write_pv(laser_wavelength_RBV, response)
+            if value != response:
+                raise ValueError("The wavelength did not change. Try again.")
+            else:
+                print(f"The wavelength has been set to: {response}")
         
     except Exception as e:
         print(f"An error occured: {e}")
@@ -124,33 +139,97 @@ def change_burstlength_callback(pvname = None, value = None, char_value = None, 
         if not (1.0 <= value <= 65535.0):
             raise KeyError(f"{value} is out of range. Chose burstlength between 1 and 65535.")
     
-    command = f"{BASE_URL}/?EXE/BurstLn/{value}"
-    urlopen(command)
-    time.sleep(0.05)
-    # To check if the value updated:
-    command_rbv = f"/?RDVAR/PRR"
-    response = read_command(command_rbv)
-    write_pv(laser_burstlength_RBV, response)
-    
-    if value != response:
-        raise ValueError("The value and readback values do not match. Try again.")
-    else:
-        print(f"The burstlength has been sent to: {response}")
+        command = f"{BASE_URL}/?EXE/BurstLn/{value}"
+        urlopen(command)
+        time.sleep(0.05)
+        # To check if the value updated:
+        command_rbv = f"/?RDVAR/PRR"
+        response = read_command(command_rbv)
+        write_pv(laser_burstlength_RBV, response)
+        print(f"The burstlength has been set too: {value}")
+        
+        #if value != response:
+        #    raise ValueError("The value and readback values do not match. Try again.")
+        #else:
+            #print(f"The burstlength has been sent to: {response}")
     except Exception as e:
         print(f"An error has occured: {e}")
 
 
+def diagnostics_callback(pvname = None, value = None, char_value = None, **kwargs):
+    """
+    Function that checks different diagnostics such as temp every second to ensure laser is working properly.
+    """
+    Temperature = read_command("/UniLDM/16/Tpp")
+    write_pv(laser_temp, Temperature)
+    print(f"The temperature is: {Temperature}")
+    # Will add other diagnostics depending on what chris wants.
+
+
+shot_history = 0 # Will store the total number of shots in this list
+last_trigger_time = None
+time_out = 900 # Clears the total shot counter 15 minutes after not recieving a trigger.
+
+
+def shot_count(pvname = None, value = None, char_value = None, **kwargs):
+    """
+    This callback function will count the number of shots taken per run. The command '/?RDVAR/TotalShots' only list the total number of shots
+    taken throughout its entire lifestyle. The way to count the total number of shots taken per run will be by starting a counter and adding 1 to it
+    each time the laser is triggered. 
+    ### Need to define the trigger. What PV will be used as trigger or how will we trigger it?
+    """
+    global last_trigger_time
+    global shot_history
+
+    LifetimeShots = read_command("/?RDVAR/TotalShots")
+    write_pv(lifetime_shots, LifetimeShots)
+    print(f"The total number shots throughout laser history is: {LifetimeShots}")
+
+    current = time.time()
+
+    if (last_trigger_time is None or current - last_trigger_time > time_out):
+        print("Timeout reached - resetting shot count")
+        shot_history = 0
+
+    shot_history += 1
+    epics.caput(f"{USER}ShotsPerRun", shot_history)
+    time.sleep(0.01)
+    last_trigger_time = current
+    print(f"Total number of shots is {shot_history}")
+
+
+def set_trigger_type(pvname = None, value = None, char_value = None, **kwargs):
+    """
+    Allows the user to set the trigger to external or external. 
+    """
+    if value == 0:
+        command = f"{BASE_URL}/?EXE/SetSyncMode/Internal"
+        urlopen(command)
+        time.sleep(0.05)
+    else:
+        command = f"{BASE_URL}/?EXE/SetSyncMode/External"
+        urlopen(command)
+        time.sleep(0.05)
+    # To check look at readback value
+    trigger_type = read_command("/?RDVAR/SyncMode")
+    write_pv(laser_trigger_typeRBV, trigger_type)
+    print(f"The trigger type has been set to: {trigger_type}")
+    
 # Initialize PVs
+print("Initializing PVs...")
 write_pv(laser_wavelength, 0)
-write_pv(laser_burstlength_RBV, 0)
+write_pv(laser_wavelength_RBV, 0)
 write_pv(laser_burstlength, 0)
 write_pv(laser_burstlength_RBV, 0)
+write_pv(laser_temp, 0)
 
 
 laser_wavelength.add_callback(change_wavelength_callback)
 laser_burstlength.add_callback(change_burstlength_callback)
-
-
+phoenix_epoch.add_callback(diagnostics_callback)
+phoenix_epoch.add_callback(shot_count) # Add a different one depending on what will be used as trigger. Maybe camera??
+laser_trigger_type.add_callback(set_trigger_type)
+print("Program ready to go!")
 ###############################################################################
 #To keep the python script running forever
 while True:
