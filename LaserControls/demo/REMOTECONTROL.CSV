@@ -1,0 +1,9 @@
+Device: Laser
+Name;ID;Reg ID;Menu;Type;User rights;Nonvolatile;Min value;Max value;Short name;Print format;Name;Value
+NL30x   ;$8;$10;$0;u8;AUS;NV;0;2;State;[SLEEP,STOP,ON,FAULT];State;SLEEP
+NL30x   ;$8;$18;$1;u8;AS;;0;2;BatchM;[Continuous,Burst,Trigger];Continuous / Burst mode / Trigger burst;Continuous
+Master  ;$14;$10;$0;float;AUS;NV;2;1320;Wl;%.7gnm;WaveLength;840.4
+Master  ;$14;$11;$3;u8;AUS;;0;6;PG_Stat;[Off,Init,Tuning...,Ok,Scanning...,Fault,No Connection];PG Status;Ok
+Master  ;$14;$13;$3;u8;AUS;NV;0;4;Conf;[OUT1A,OUT1B,OUT1C,OUT1D,DETIIH];Configuration;OUT1A
+NL30x   ;$8;$11;$1;u8;AUS;NV;0;2;Energy;[OFF,Adjustment,Max];Output level;OFF
+__license:feb1c11a2d6051214ef36c68644f2231

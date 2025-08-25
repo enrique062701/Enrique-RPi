@@ -1,0 +1,325 @@
+Device: HNL274 Date: 2020-02-14
+Name;ID;Reg ID;Menu;Type;User rights;Nonvolatile;Min value;Max value;Short name;Print format;Name;Value
+UniLDM  ;$10;$FF;$0;;;;;;;;;
+UniLDM  ;$10;$10;$1;u8;AUS;NV;0;1;State;[OFF,ON];Command;OFF
+UniLDM  ;$10;$59;$1;u8;ArUrSr;;0;5;LDDStatus;[OFF,NO RTO,CMD OFF,START DLY,ON,FAULT];LDD Status;CMD OFF
+UniLDM  ;$10;$58;$1;u8;AUrS;NV;0;2;TECCommand;[OFF,ON,Force ON];TEC Command;ON
+UniLDM  ;$10;$5A;$1;u8;ArUrSr;;0;4;TECStatus;[OFF,CMD OFF,Not Stable,Stable,Fault];TEC Status;Not Stable
+UniLDM  ;$10;$1B;$1;float;AUS;NV;0;1000;IUset;%fA;Iset;0
+UniLDM  ;$10;$1D;$1;float;ArUrSr;;0;1000;IUdisp;%.2fA;Idisp;0.05
+UniLDM  ;$10;$3D;$1;u16;ArUrSr;;0;4095;Vout1;%.2fV;Vout;0.00
+UniLDM  ;$10;$40;$1;u16;ArUrSr;;0;4095;Vhpwr;%.2fV;Vpwr1;0.72
+UniLDM  ;$10;$4F;$1;float;ArUrSr;;0;1;Tsense1;%.2fC;Tpp;27.41
+UniLDM  ;$10;$51;$1;float;ArUrSr;;0;1;Tcursense;%.2fC;Tcursense;28.06
+UniLDM  ;$10;$47;$1;float;ArUrSr;;0;1;Trtd1;%.2fC;Ttec1;23.19
+UniLDM  ;$10;$5C;$1;u16;AUrS;NV;0;10000;TEC1Tset;%.2fC;Ttec1set;25.00
+UniLDM  ;$10;$4A;$1;float;ArUrSr;;0;1;Trtd2;%.2fC;Ttec2;23.35
+UniLDM  ;$10;$68;$1;u16;AUrS;NV;0;10000;TEC2Tset;%.2fC;Ttec2set;25.00
+UniLDM  ;$10;$4D;$1;float;ArUrSr;;0;1;Trtd3;%.2fC;Thot;24.37
+UniLDM  ;$10;$41;$1;s16;ArUrSr;;-4095;4095;Isense4f;%.2fA;Itec1;-0.71
+UniLDM  ;$10;$42;$1;s16;ArUrSr;;-4095;4095;Isense5f;%.2fA;Itec2;-0.71
+UniLDM  ;$10;$45;$1;u16;ArUrSr;;0;4095;Tj;%.1fC;Tjcpu;36.0
+UniLDM  ;$10;$FF;$50;;;;;;;;Sync mode;
+UniLDM  ;$10;$75;$51;u16;AUS;NV;0;2;SyncMode;[Int sync,Ext sync,Continuous];Sync mode;Ext sync
+UniLDM  ;$10;$76;$51;u16;AUS;NV;1;50000;RepRate;%.1fHz;Repetition rate;1000.0
+UniLDM  ;$10;$77;$51;u16;AUS;NV;1;50000;PW;%.1fus;Pulse width;200.0
+UniLDM  ;$10;$78;$51;u16;AUS;NV;120;50000;SyncDly;%.1fus;Pulse delay;20.0
+UniLDM  ;$10;$FF;$10;;;;;;;;Interlocks;
+UniLDM  ;$10;$79;$A1;u8;AUrS;NV;0;2;Intl1S;[ON,Defeat,No error];Interlock1 on off;Defeat
+UniLDM  ;$10;$7A;$A1;u8;ArUrSr;;0;2;Intl1D;[OK,NOT OK,Defeated];Interlock1 state;Defeated
+UniLDM  ;$10;$7B;$A1;u8;AUrS;NV;0;2;Intl2S;[ON,Defeat,No error];Interlock2 on off;ON
+UniLDM  ;$10;$7D;$A1;u32;AUS;NV;0;1000000;Intl2Fmin;%uHz;Interlock2 min. frequency;0
+UniLDM  ;$10;$7C;$A1;u8;ArUrSr;;0;2;Intl2D;[OK,NOT OK,Defeated];Interlock2 state;NOT OK
+UniLDM  ;$10;$7E;$A1;u32;ArUrSr;;0;1000000;Intl2F;%uHz;Interlock2 read frequency;4294967295
+UniLDM  ;$10;$88;$A1;u8;AUrS;NV;0;1;ActiveRTO;[OFF,ON];Active RTO;ON
+UniLDM  ;$10;$7F;$A1;u16;AUrS;NV;500;10000;Vpwr1min;%.2fV;Vpwr1 min;12.00
+UniLDM  ;$10;$80;$A1;u16;AUrS;NV;500;11300;Vpwr1max;%.2fV;Vpwr1 max;30.00
+UniLDM  ;$10;$81;$A1;u16;AUrS;NV;0;10000;Vpwr5min;%.2fV;Vpwr5 min;12.00
+UniLDM  ;$10;$82;$A1;u16;AUrS;NV;0;11300;Vpwr5max;%.2fV;Vpwr5 max;30.00
+UniLDM  ;$10;$84;$A1;u16;AUrS;NV;0;3100;Isense4max;%.2fA;Itec1 max;9.00
+UniLDM  ;$10;$83;$A1;u16;AUrS;NV;0;3100;Isense5max;%.2fA;Itec2 max;9.00
+UniLDM  ;$10;$85;$A1;u16;AUrS;NV;0;65535;IUdispmax;%.2fA;Iout max;110.00
+UniLDM  ;$10;$86;$A1;u16;AUrS;NV;0;10000;Vout1max;%.2fV;Vout max;8.00
+UniLDM  ;$10;$50;$A1;float;AUrS;NV;-100;273;Tsense1max;%fC;Tpp max;70
+UniLDM  ;$10;$52;$A1;float;AUrS;NV;-100;273;Tcursensemax;%fC;Tcursense max;70
+UniLDM  ;$10;$48;$A1;float;AUrS;NV;-100;273;Trtd1min;%fC;Trtd1 min;15
+UniLDM  ;$10;$49;$A1;float;AUrS;NV;-100;273;Trtd1max;%fC;Trtd1 max;35
+UniLDM  ;$10;$4B;$A1;float;AUrS;NV;-100;273;Trtd2min;%fC;Trtd2 min;15
+UniLDM  ;$10;$4C;$A1;float;AUrS;NV;-100;273;Trtd2max;%fC;Trtd2 max;35
+UniLDM  ;$10;$4E;$A1;float;AUrS;NV;-100;273;Trtd3max;%fC;Trtd3 max;40
+UniLDM  ;$10;$74;$A1;u8;AUrS;NV;0;120;TecStTout;%us;TEC stabilization time limit;60
+UniLDM  ;$10;$FF;$10;;;;;;;;LD Controller setup;
+UniLDM  ;$10;$1C;$11;float;AUS;NV;1;1000;IUsetLim;%fA;Iset limit;100
+UniLDM  ;$10;$3B;$11;float;AS;NV;-3.40282346638529E38;3.40282346638529E38;CIUMul;%g;Ild calibration multiplier;0.00534999370574951
+UniLDM  ;$10;$3C;$11;float;AS;NV;-3.40282346638529E38;3.40282346638529E38;CIUAdd;%g;Ild calibration addend;0
+UniLDM  ;$10;$87;$11;u8;AUS;NV;0;1;Anctrl;[OFF,ON];Analog control;OFF
+UniLDM  ;$10;$33;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;LDCoB0;%.7f;LD 3P3Z B0;2.7703819
+UniLDM  ;$10;$34;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;LDCoB1;%.7f;LD 3P3Z B1;-1.9395967
+UniLDM  ;$10;$35;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;LDCoB2;%.7f;LD 3P3Z B2;0.4210108
+UniLDM  ;$10;$36;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;LDCoB3;%.7f;LD 3P3Z B3;-1.0288323
+UniLDM  ;$10;$37;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;LDCoA1;%.7f;LD 3P3Z A1;0.1761576
+UniLDM  ;$10;$38;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;LDCoA2;%.7f;LD 3P3Z A2;0.6652246
+UniLDM  ;$10;$39;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;LDCoA3;%.7f;LD 3P3Z A3;0.1586178
+UniLDM  ;$10;$53;$11;u8;AUrS;;0;1;LDManual;[OFF,ON];LD Manual;OFF
+UniLDM  ;$10;$20;$11;u16;AUS;;0;10000;HpwrPwm;%.2f%;LD PWM;0.00
+UniLDM  ;$10;$21;$11;u16;AUS;NV;0;10000;HpwrPwmMax;%.2f%;LD PWM limit;95.00
+UniLDM  ;$10;$22;$11;u16;A;NV;0;10000;HpwrPwmDT1;%.1fns;LD PWM DT1;30.0
+UniLDM  ;$10;$23;$11;u16;A;NV;0;10000;HpwrPwmDT2;%.1fns;LD PWM DT2;30.0
+UniLDM  ;$10;$5B;$11;u8;AUrS;NV;0;120;StartDelay;%us;Turn ON delay;5
+UniLDM  ;$10;$FF;$40;;;;;;;;TEC1 Controller setup;
+UniLDM  ;$10;$5D;$41;u8;ArUrSr;;0;1;TEC1Stable;[Not Stable,Stable];TEC1 T is stable;Not Stable
+UniLDM  ;$10;$5E;$41;u16;AUrS;NV;0;10000;TEC1Tmax;%.2fC;TEC1 Tmax;35.00
+UniLDM  ;$10;$5F;$41;u16;AUrS;NV;0;10000;TEC1Tmin;%.2fC;TEC1 Tmin;15.00
+UniLDM  ;$10;$60;$41;float;AUrS;NV;0;3.40282346638529E38;TEC1Kp;%.6f;TEC1 Kp;90.000000
+UniLDM  ;$10;$61;$41;float;AUrS;NV;0;3.40282346638529E38;TEC1Ki;%.6f;TEC1 Ki;0.080000
+UniLDM  ;$10;$62;$41;float;AUrS;NV;0;3.40282346638529E38;TEC1Kd;%.6f;TEC1 Kd;0.000000
+UniLDM  ;$10;$63;$41;u8;AUrS;;0;1;TEC1Manual;[OFF,ON];TEC1 Manual;OFF
+UniLDM  ;$10;$24;$41;s16;AUS;;-10000;10000;Tec1Pwm;%.2f%;TEC1 PWM;-60.00
+UniLDM  ;$10;$64;$41;s16;AUrS;NV;-10000;10000;TEC1PWMMax;%.2f%;TEC1 PWM Max;60.00
+UniLDM  ;$10;$65;$41;s16;AUrS;NV;-10000;10000;TEC1PWMMin;%.2f%;TEC1 PWM Min;-60.00
+UniLDM  ;$10;$66;$41;u16;AUrS;NV;0;10000;TEC1Wnd;%.2fC;TEC1 stability window;1.00
+UniLDM  ;$10;$67;$41;u8;AUrS;NV;0;120;TEC1Wndt;%us;TEC1 stability window time;10
+UniLDM  ;$10;$FF;$60;;;;;;;;TEC2 Controller setup;
+UniLDM  ;$10;$69;$61;u8;ArUrSr;;0;1;TEC2Stable;[Not Stable,Stable];TEC2 T is stable;Not Stable
+UniLDM  ;$10;$6A;$61;u16;AUrS;NV;0;10000;TEC2Tmax;%.2fC;TEC2 Tmax;35.00
+UniLDM  ;$10;$6B;$61;u16;AUrS;NV;0;10000;TEC2Tmin;%.2fC;TEC2 Tmin;15.00
+UniLDM  ;$10;$6C;$41;float;AUrS;NV;0;3.40282346638529E38;TEC2Kp;%.6f;TEC2 Kp;90.000000
+UniLDM  ;$10;$6D;$41;float;AUrS;NV;0;3.40282346638529E38;TEC2Ki;%.6f;TEC2 Ki;0.080000
+UniLDM  ;$10;$6E;$41;float;AUrS;NV;0;3.40282346638529E38;TEC2Kd;%.6f;TEC2 Kd;0.000000
+UniLDM  ;$10;$6F;$61;u8;AUrS;;0;1;TEC2Manual;[OFF,ON];TEC2 Manual;OFF
+UniLDM  ;$10;$27;$61;s16;AUS;;-10000;10000;Tec2Pwm;%.2f%;TEC2 PWM;-60.00
+UniLDM  ;$10;$70;$61;s16;AUrS;NV;-10000;10000;TEC2PWMMax;%.2f%;TEC2 PWM Max;60.00
+UniLDM  ;$10;$71;$61;s16;AUrS;NV;-10000;10000;TEC2PWMMin;%.2f%;TEC2 PWM Min;-60.00
+UniLDM  ;$10;$72;$61;u16;AUrS;NV;0;10000;TEC2Wnd;%.2fC;TEC2 stability window;1.00
+UniLDM  ;$10;$73;$61;u8;AUrS;NV;0;120;TEC2Wndt;%us;TEC2 stability window time;10
+UniLDM  ;$10;$FF;$C0;;;;;;;;TEC common settings;
+UniLDM  ;$10;$2A;$C1;u16;AUS;NV;0;10000;HRPwm;%.2f%;TEC common point PWM;59.50
+UniLDM  ;$10;$28;$C1;u16;AUS;NV;0;10000;TecMidPwmMax;%.2f%;TEC common point PWM max;95.00
+UniLDM  ;$10;$29;$C1;u8;AUS;NV;0;1;TecMidPwmAuto;[OFF,ON];TEC common point auto;ON
+UniLDM  ;$10;$25;$C1;u16;A;NV;0;10000;TecPwmDT1;%.1fns;TEC PWM DT1;30.0
+UniLDM  ;$10;$26;$C1;u16;A;NV;0;10000;TecPwmDT2;%.1fns;TEC PWM DT2;30.0
+UniLDM  ;$10;$FF;$70;;;;;;;;FAN1 Controller setup;
+UniLDM  ;$10;$1E;$71;float;AUrS;NV;20;150;Fan1Tset;%.2f;Tpp set;35.00
+UniLDM  ;$10;$2C;$71;float;AUrS;NV;0;3.40282346638529E38;Fan1Kp;%.6f;FAN1 PID Kp;10.000000
+UniLDM  ;$10;$2D;$71;float;AUrS;NV;0;3.40282346638529E38;Fan1Ki;%.6f;FAN1 PID Ki;0.010000
+UniLDM  ;$10;$2E;$71;float;AUrS;NV;0;3.40282346638529E38;Fan1Kd;%.6f;FAN1 PID Kd;300.000000
+UniLDM  ;$10;$54;$71;u8;AUrS;;0;1;FAN1Manual;[OFF,ON];FAN1 Manual;OFF
+UniLDM  ;$10;$2B;$71;u16;AUrS;;0;10000;Fan1Pwm;%.2f%;FAN1 PWM;55.00
+UniLDM  ;$10;$55;$71;u16;AUrS;NV;0;10000;Fan1PwmMin;%.2f%;FAN1 min. PWM;55.00
+UniLDM  ;$10;$FF;$80;;;;;;;;FAN2 Controller setup;
+UniLDM  ;$10;$1F;$81;float;AUrS;NV;20;150;Fan2Tset;%.2f;Thot set;35.00
+UniLDM  ;$10;$30;$71;float;AUrS;NV;0;3.40282346638529E38;Fan2Kp;%.6f;FAN2 PID Kp;10.000000
+UniLDM  ;$10;$31;$71;float;AUrS;NV;0;3.40282346638529E38;Fan2Ki;%.6f;FAN2 PID Ki;0.010000
+UniLDM  ;$10;$32;$71;float;AUrS;NV;0;3.40282346638529E38;Fan2Kd;%.6f;FAN2 PID Kd;300.000000
+UniLDM  ;$10;$56;$81;u8;AUrS;NV;0;1;FAN2Manual;[OFF,ON];FAN2 Manual;OFF
+UniLDM  ;$10;$2F;$81;u16;AUS;;0;10000;Fan2Pwm;%.2f%;FAN2 PWM;50.00
+UniLDM  ;$10;$57;$81;u16;AUrS;NV;0;10000;Fan2PwmMin;%.2f%;FAN2 min. PWM;50.00
+UniLDM  ;$10;$FF;$30;;;;;;;;Sensors;
+UniLDM  ;$10;$89;$31;u8;AS;NV;0;7;RTDCfg;[Pt-Pt-Pt,Pt-Pt-NTC,Pt-NTC-Pt,Pt-NTC-NTC,NTC-Pt-Pt,NTC-Pt-NTC,NTC-NTC-Pt,NTC-NTC-NTC];RTD 1-2-3 sensor type;Pt-Pt-NTC
+UniLDM  ;$10;$3E;$31;s16;ArUrSr;;0;4095;Vps;%.2fV;Negative supply, Vps;11.71
+UniLDM  ;$10;$43;$31;u16;ArUrSr;;0;4095;Vout4;%.2fV;Vout4;0.00
+UniLDM  ;$10;$44;$31;u16;ArUrSr;;0;4095;Vinout5;%.2fV;Vinout5;0.00
+UniLDM  ;$10;$3F;$31;u16;ArUrSr;;0;4095;Vhpwr5;%.2fV;Vhpwr5;0.27
+UniLDM  ;$10;$46;$31;float;ArUrSr;;0;5.73831721141013E-42;Iprog;%.6f;Iprog;0.000000
+UniLDM  ;$10;$FF;$20;;;;;;;;ADC;
+UniLDM  ;$10;$8A;$21;u16;ArSr;;0;65535;ADCINB23;%d;ADCINB23;15
+UniLDM  ;$10;$8B;$21;u16;ArSr;;0;65535;ADCINB45;%d;ADCINB45;44
+UniLDM  ;$10;$8C;$21;u16;ArSr;;0;4095;ADCINA0;%u;ADCINA0;0
+UniLDM  ;$10;$FF;$90;;;;;;;;SFRA test;
+UniLDM  ;$10;$13;$91;u16;A;;0;1;SFRAstart;[-,START];SFRA start command;-
+UniLDM  ;$10;$14;$91;u16;Ar;;0;1;SFRAstatus;%u;SFRA status;0
+UniLDM  ;$10;$11;$91;float;A;;10;100000;SFRAMinF;%gHz;SFRA start frequency;100
+UniLDM  ;$10;$12;$91;float;A;;10;300000;SFRAMaxF;%gHz;SFRA stop frequency;250000
+UniLDM  ;$10;$15;$91;u16;A;;0;99;SFRAidx;%u;SFRA data index;0
+UniLDM  ;$10;$16;$91;float;Ar;;0.100000001490116;100000;SFRAFreq;%.7f;SFRA frequency Hz;0.0000000
+UniLDM  ;$10;$17;$91;float;Ar;;0.100000001490116;100000;SFRAOLMag;%.7f;SFRA OL Magnitude dB;0.0000000
+UniLDM  ;$10;$18;$91;float;Ar;;0.100000001490116;100000;SFRAOLPha;%.7f;SFRA OL Phase deg;0.0000000
+UniLDM  ;$10;$19;$91;float;Ar;;0.100000001490116;100000;SFRAPLMag;%.7f;SFRA Plant Magnitude dB;0.0000000
+UniLDM  ;$10;$1A;$91;float;Ar;;0.100000001490116;100000;SFRAPLPha;%.7f;SFRA Plant Phase deg;0.0000000
+UniLDM  ;$10;$9;$F;u32;ArUrSr;;0;4294967295;Version;%06u;Firmware UniLDM QCW180A-2xTEC r2;200130
+SY4000  ;$20;$FF;$0;;;;;;;;;
+SY4000  ;$20;$10;$0;u8;AUS;NV;0;1;Command;[OFF,ON,FAULT];Command;OFF
+SY4000  ;$20;$14;$A;u16;ArSr;;0;660;PhdBias;%.2fV;Photodiode bias;6.07
+SY4000  ;$20;$17;$B;u32;AUS;NV;2;2147483647;Tmin;%u;Trigger Tmin delay;2
+SY4000  ;$20;$18;$B;u32;AUS;NV;2;2147483647;Tmax;%u;Trigger Tmax delay;2147483647
+SY4000  ;$20;$69;$B;u16;AUS;NV;1;65535;Fdiv;%u;F div;1
+SY4000  ;$20;$6A;$B;u16;AUS;NV;1;32767;FdivAcq;%u;F div Acq;1
+SY4000  ;$20;$6B;$B;u16;AUS;NV;0;4095;DAC1;%u;DAC1;0
+SY4000  ;$20;$6C;$B;u16;AUS;NV;0;4095;DAC2;%u;DAC2;2047
+SY4000  ;$20;$7E;$B;u8;ArUrSr;;0;1;PLL1locked;[NOLOCK,LOCKOK];PLL1 lock;LOCKOK
+SY4000  ;$20;$1F;$B;u8;ArUrSr;;0;3;CLKvalid;[NOCLOCK-NOLOCK,NOCLOCK-LOCKOK,CLOCKOK-NOLOCK,CLOCKOK-LOCKOK];PLL2 clock and lock;CLOCKOK-LOCKOK
+SY4000  ;$20;$6D;$B;u8;AUrSr;NV;0;1;VCO;[2.5GHz,3GHz];VCO2 frequency;3GHz
+SY4000  ;$20;$6E;$B;s8;AUrSr;NV;-8;8;LagPLL;%d;LagPLL;0
+SY4000  ;$20;$6F;$B;s8;A;;0;18;LD2mux;[Logic Low,PLL1 DLD,PLL2 DLD,PLL1 & PLL2 DLD,Holdover Status,DAC Locked,Reserved,SPI Readback,DAC Rail,DAC Low,DAC High,PLL1_N,PLL1_Ndiv2,PLL2_N,PLL2_N/2,PLL1_R,PLL1_Rdiv2,PLL2_R,PLL2_Rdiv2];LD2mux;PLL2 DLD
+SY4000  ;$20;$70;$B;s8;A;;0;1;OSTrig;[-,START];One shot trigger;-
+SY4000  ;$20;$71;$B;s8;A;;0;1;OSBurst;[-,START];One shot burst;-
+SY4000  ;$20;$72;$B;s8;A;;0;1;OSLSET;[-,START];One shot latch set;-
+SY4000  ;$20;$73;$B;s8;A;;0;1;OSLCLR;[-,START];One shot latch reset;-
+SY4000  ;$20;$74;$B;u32;AUS;NV;1;65535;BatchC;%u;Burst count;1
+SY4000  ;$20;$FF;$40;;;;;;;;LMK delay block;
+SY4000  ;$20;$56;$41;u8;AUS;NV;0;23;Adly0;%u;A delay 0;0
+SY4000  ;$20;$57;$41;u8;AUS;NV;0;23;Adly1;%u;A delay 1;0
+SY4000  ;$20;$58;$41;u8;AUS;NV;0;23;Adly2;%u;A delay 2;0
+SY4000  ;$20;$59;$41;u8;AUS;NV;0;23;Adly3;%u;A delay 3;0
+SY4000  ;$20;$5A;$41;u8;AUS;NV;0;23;Adly4;%u;A delay 4;0
+SY4000  ;$20;$5B;$41;u8;AUS;NV;0;23;Adly5;%u;A delay 5;0
+SY4000  ;$20;$5C;$41;u8;AUS;NV;0;23;Adly6;%u;A delay 6;0
+SY4000  ;$20;$5D;$41;u8;AUS;NV;4;32;Ddly0;%u;D delay 0;24
+SY4000  ;$20;$5E;$41;u8;AUS;NV;4;32;Ddly1;%u;D delay 1;16
+SY4000  ;$20;$5F;$41;u8;AUS;NV;4;32;Ddly2;%u;D delay 2;8
+SY4000  ;$20;$60;$41;u8;AUS;NV;4;32;Ddly3;%u;D delay 3;28
+SY4000  ;$20;$62;$41;u8;AUS;NV;4;32;Ddly5;%u;D delay 5;12
+SY4000  ;$20;$63;$41;u8;AUS;NV;4;32;Ddly6;%u;D delay 6;4
+SY4000  ;$20;$FF;$50;;;;;;;;Delay counters;
+SY4000  ;$20;$A;$5B;u32;AUrS;NV;3;16777218;DelayCnt0;%u;Delay counter 0;10
+SY4000  ;$20;$16;$5B;u32;AUrS;NV;3;16777218;DelayCnt1;%u;Delay counter 1;21
+SY4000  ;$20;$19;$5B;u32;AUrS;NV;3;16777218;DelayCnt2;%u;Delay counter 2;32
+SY4000  ;$20;$1A;$5B;u32;AUrS;NV;3;16777218;DelayCnt3;%u;Delay counter 3;42
+SY4000  ;$20;$1B;$5B;u32;AUrS;NV;3;16777218;DelayCnt4;%u;Delay counter 4;50
+SY4000  ;$20;$1C;$5B;u32;AUrS;NV;3;16777218;DelayCnt5;%u;Delay counter 5;64
+SY4000  ;$20;$1D;$5B;u32;AUrS;NV;3;16777218;DelayCnt6;%u;Delay counter 6;75
+SY4000  ;$20;$1E;$5B;u32;AUrS;NV;3;16777218;DelayCnt7;%u;Delay counter 7;85
+SY4000  ;$20;$26;$5B;u16;AUrS;NV;3;258;PostCnt0;%u;Post delay counter 0;214
+SY4000  ;$20;$27;$5B;u16;AUrS;NV;3;258;PostCnt1;%u;Post delay counter 1;214
+SY4000  ;$20;$28;$5B;u16;AUrS;NV;3;258;PostCnt2;%u;Post delay counter 2;214
+SY4000  ;$20;$29;$5B;u16;AUrS;NV;3;258;PostCnt3;%u;Post delay counter 3;214
+SY4000  ;$20;$2A;$5B;u16;AUrS;NV;3;258;PostCnt4;%u;Post delay counter 4;200
+SY4000  ;$20;$2B;$5B;u16;AUrS;NV;3;258;PostCnt5;%u;Post delay counter 5;214
+SY4000  ;$20;$2C;$5B;u16;AUrS;NV;3;258;PostCnt6;%u;Post delay counter 6;214
+SY4000  ;$20;$2D;$5B;u16;AUrS;NV;3;258;PostCnt7;%u;Post delay counter 7;214
+SY4000  ;$20;$FF;$10;;;;;;;;Muxes;
+SY4000  ;$20;$2E;$3B;u8;AUS;NV;0;15;MuxSetConf10;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 1, block 0;0
+SY4000  ;$20;$2F;$3B;u8;AUS;NV;0;15;MuxSetConf20;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 2, block 0;Fine del0
+SY4000  ;$20;$30;$3B;u8;AUS;NV;0;15;MuxResConf10;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 1, block 0;0
+SY4000  ;$20;$31;$3B;u8;AUS;NV;0;15;MuxResConf20;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 2, block 0;Post-count
+SY4000  ;$20;$32;$3B;u8;AUS;NV;0;15;MuxSetConf11;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 1, block 1;0
+SY4000  ;$20;$33;$3B;u8;AUS;NV;0;15;MuxSetConf21;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 2, block 1;Fine del1
+SY4000  ;$20;$34;$3B;u8;AUS;NV;0;15;MuxResConf11;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 1, block 1;0
+SY4000  ;$20;$35;$3B;u8;AUS;NV;0;15;MuxResConf21;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 2, block 1;Post-count
+SY4000  ;$20;$36;$3B;u8;AUS;NV;0;15;MuxSetConf12;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 1, block 2;0
+SY4000  ;$20;$37;$3B;u8;AUS;NV;0;15;MuxSetConf22;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 2, block 2;Fine del2
+SY4000  ;$20;$38;$3B;u8;AUS;NV;0;15;MuxResConf12;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 1, block 2;0
+SY4000  ;$20;$39;$3B;u8;AUS;NV;0;15;MuxResConf22;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 2, block 2;Post-count
+SY4000  ;$20;$3A;$3B;u8;AUS;NV;0;15;MuxSetConf13;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 1, block 3;0
+SY4000  ;$20;$3B;$3B;u8;AUS;NV;0;15;MuxSetConf23;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 2, block 3;Fine del3
+SY4000  ;$20;$3C;$3B;u8;AUS;NV;0;15;MuxResConf13;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 1, block 3;0
+SY4000  ;$20;$3D;$3B;u8;AUS;NV;0;15;MuxResConf23;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 2, block 3;Post-count
+SY4000  ;$20;$3E;$3B;u8;AUS;NV;0;15;MuxSetConf14;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 1, block 4;0
+SY4000  ;$20;$3F;$3B;u8;AUS;NV;0;15;MuxSetConf24;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 2, block 4;Fine del4
+SY4000  ;$20;$40;$3B;u8;AUS;NV;0;15;MuxResConf14;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 1, block 4;0
+SY4000  ;$20;$41;$3B;u8;AUS;NV;0;15;MuxResConf24;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 2, block 4;Post-count
+SY4000  ;$20;$42;$3B;u8;AUS;NV;0;15;MuxSetConf15;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 1, block 5;0
+SY4000  ;$20;$43;$3B;u8;AUS;NV;0;15;MuxSetConf25;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 2, block 5;Fine del5
+SY4000  ;$20;$44;$3B;u8;AUS;NV;0;15;MuxResConf15;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 1, block 5;0
+SY4000  ;$20;$45;$3B;u8;AUS;NV;0;15;MuxResConf25;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 2, block 5;Post-count
+SY4000  ;$20;$46;$3B;u8;AUS;NV;0;15;MuxSetConf16;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 1, block 6;0
+SY4000  ;$20;$47;$3B;u8;AUS;NV;0;15;MuxSetConf26;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 2, block 6;Coarse del6
+SY4000  ;$20;$48;$3B;u8;AUS;NV;0;15;MuxResConf16;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 1, block 6;0
+SY4000  ;$20;$49;$3B;u8;AUS;NV;0;15;MuxResConf26;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 2, block 6;Post-count
+SY4000  ;$20;$4A;$3B;u8;AUS;NV;0;15;MuxSetConf17;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 1, block 7;0
+SY4000  ;$20;$4B;$3B;u8;AUS;NV;0;15;MuxSetConf27;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch SET,GATE,nGATE,Delayed res];Mux set conf 2, block 7;Coarse del7
+SY4000  ;$20;$4C;$3B;u8;AUS;NV;0;15;MuxResConf17;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 1, block 7;0
+SY4000  ;$20;$4D;$3B;u8;AUS;NV;0;15;MuxResConf27;[0,1,Post-count,Fine del0,Fine del1,Fine del2,Fine del3,Fine del4,Fine del5,Coarse del6,Coarse del7,Trigger,Latch RES,GATE,nGATE,Delayed set];Mux res conf 2, block 7;Post-count
+SY4000  ;$20;$7A;$3B;u8;AUS;NV;0;3;MuxOut2;[lOUT2,lOUT2 and OUT1,lOUT2 or OUT1,not OUT1];OUT2 mux;lOUT2
+SY4000  ;$20;$7B;$3B;u8;AUS;NV;0;3;MuxOut3;[lOUT3,lOUT3 and OUT2,lOUT3 or OUT2,not OUT2];OUT3 mux;lOUT3
+SY4000  ;$20;$7C;$3B;u8;AUS;NV;0;3;MuxOut4;[lOUT4,lOUT4 and OUT3,lOUT4 or OUT3,not OUT3];OUT4 mux;lOUT4
+SY4000  ;$20;$7D;$3B;u8;AUS;NV;0;3;MuxOut5;[lOUT5,lOUT5 and OUT4,lOUT5 or OUT4,not OUT4];OUT5 mux;lOUT5
+SY4000  ;$20;$4E;$3B;u8;AUS;NV;0;15;MuxTrg1Out;[nbOUT0,nbOUT1,nbOUT2,nbOUT3,nbOUT4,nbOUT5,nbOUT6,nbOUT7,OPTCLK,OPCLK div 2,t1,t2,t3,t4,t5,t6];Mux TRIG1 OUT;nbOUT0
+SY4000  ;$20;$4F;$3B;u8;AUS;NV;0;9;MuxPreT;[nbOUT0,nbOUT1,nbOUT2,nbOUT3,nbOUT4,nbOUT5,nbOUT6,nbOUT7,OPTCLK,OPCLK div 2];Mux PRET OUT;nbOUT0
+SY4000  ;$20;$50;$3B;u8;AUS;NV;0;7;MuxDAC;[nbOUT0,nbOUT1,nbOUT2,nbOUT3,nbOUT4,nbOUT5,nbOUT6,nbOUT7];Mux DAC CS;nbOUT0
+SY4000  ;$20;$51;$3B;u8;AUS;NV;0;7;MuxACQ;[nbOUT0,nbOUT1,nbOUT2,nbOUT3,nbOUT4,nbOUT5,nbOUT6,nbOUT7];Mux ACQ out;nbOUT0
+SY4000  ;$20;$52;$3B;u8;AUS;NV;0;6;MuxConfSw;[0,1,Burst,nBurst,F div,GATE,nGATE];Mux Conf switch;1
+SY4000  ;$20;$53;$3B;u8;AUS;NV;0;3;MuxBurstT;[SYNCIN,GATE,nGATE,One shot burst];Mux Burst trigger;SYNCIN
+SY4000  ;$20;$54;$3B;u8;AUS;NV;0;5;MuxStartTrg;[Rate divider,Rate div@OPTCLK,SYNCIN,SYNCIN@OPTCLK,One shot trig,One shot smart];Mux Trigger;Rate divider
+SY4000  ;$20;$55;$3B;u8;AUS;NV;0;3;MuxRateClk;[Internal,OPTCLK,OPTCLKdiv2,SYNCIN];Mux Rate divider source;Internal
+SY4000  ;$20;$20;$B;u32;AUrSr;NV;1;2147483647;Ratediv;%u;Rate divider;1000000
+SY4000  ;$20;$12;$B;u32;AUS;NV;1;18000;Ndiv;%u;PLL2 N divider;30
+SY4000  ;$20;$FF;$10;;;;;;;;Setup;
+SY4000  ;$20;$75;$11;u8;AS;NV;0;1;OscClkMux;[Internal 100Mhz,External];Optical clock mux;Internal 100Mhz
+SY4000  ;$20;$11;$11;u8;AS;NV;10;100;OscClock;%uMHz;Oscilator clock;100
+SY4000  ;$20;$22;$11;u8;AS;NV;0;1;SyncRPhase;%u;/SYNC Phase;0
+SY4000  ;$20;$65;$11;u8;A;NV;0;1;FltTmin;[OFF,ON];Fault on T<Tmin;OFF
+SY4000  ;$20;$66;$11;u8;A;NV;0;1;FltTmax;[OFF,ON];Fault on T>Tmax;OFF
+SY4000  ;$20;$67;$11;u8;A;NV;0;1;LimTmin;[OFF,ON];Limit to T<Tmin;OFF
+SY4000  ;$20;$68;$11;u8;A;NV;0;1;LimTmax;[OFF,ON];Limit to T>Tmax;OFF
+SY4000  ;$20;$7F;$11;u8;A;NV;0;1;NoBurstSync;[OFF,ON];Disable trig-synchronous burst;OFF
+SY4000  ;$20;$FF;$60;;;;;;;;Counters;
+SY4000  ;$20;$76;$11;u32;ArUrSr;;0;0;OscInF;%.2fkHz;CLK IN frequency;100000.00
+SY4000  ;$20;$77;$11;u32;ArUrSr;;0;0;SYNCINF;%.2fkHz;SYNC IN frequency;0.00
+SY4000  ;$20;$78;$11;u32;ArUrSr;;0;0;SYNCINP;%u 10ns;SYNC IN period;3
+SY4000  ;$20;$79;$11;u32;ArUrSr;;0;0;SYNCIN1DL;%u 10ns;SYNCIN1 delay;0
+SY4000  ;$20;$15;$11;u32;ArUrSr;;0;0;OptClk;%uHz;PLL2 frequency;99986624
+SY4000  ;$20;$FF;$20;;;;;;;;CPLD version;
+SY4000  ;$20;$23;$23;str8;ArUrSr;;0;0;CPLDVer0;%s;CPLD Version string;SY4000  
+SY4000  ;$20;$24;$23;u32;ArUrSr;;0;4294967295;CPLDVer1;%u;CPLD Version number;0
+SY4000  ;$20;$25;$23;u32;ArUrSr;;0;4294967295;CPLDate;%u;CPLD date code;170315
+SY4000  ;$20;$64;$E;u32;ArSr;;0;0;LMKid;%0x;LMK id ID_PROD:ID_MASKREV;D05B0020
+SY4000  ;$20;$21;$E;u8;A;;0;1;Calibrate;%u;Trigger calibrate LMK;0
+SY4000  ;$20;$9;$F;u32;ArUrSr;;0;4294967295;Version;%06u;Firmware SY4000;190221
+HV40W   ;$28;$FF;$0;;;;;;;;;
+HV40W   ;$28;$10;$1;u8;AUS;NV;0;1;Pwr;[OFF,ON];Power switch;OFF
+HV40W   ;$28;$11;$2;u16;AUrS;NV;0;4000;SHV;%uV;Set HV voltage;0
+HV40W   ;$28;$12;$3;u16;ArUrSr;;0;4000;HV;%uV;HV voltage;11
+HV40W   ;$28;$13;$4;u16;ArUrSr;;0;4092;IHV;%.2fmA;HV current;0.02
+HV40W   ;$28;$15;$6;u8;ArUrSr;;0;1;Enab;[OFF,ON];HV supply enabled;ON
+HV40W   ;$28;$16;$7;u8;ArUrSr;;0;2;OK;[OFF,OK,BURST];Power circuit status;OFF
+HV40W   ;$28;$17;$8;u8;ArUrSr;;0;1;CL;[Current Limit,OK];Current limit status;OK
+HV40W   ;$28;$FF;$10;;;;;;;;Calibrate;
+HV40W   ;$28;$18;$11;u16;ASr;NV;5;1200;IHL;%.1fmA;Current limit;2.5
+HV40W   ;$28;$19;$12;s16;ASr;NV;-32767;32767;CHV;%d;Calibrate HV voltage;280
+HV40W   ;$28;$1A;$13;s16;ASr;NV;-32767;32767;CDHV;%d;Calibrate display HV voltage;-1500
+HV40W   ;$28;$14;$14;u16;ASr;NV;100;40000;Ki;%.1fV/A;Current sensor constant;473.0
+HV40W   ;$28;$1C;$16;u16;ASr;NV;0;4000;SHVLim;%uV;High Voltage Limit;4000
+HV40W   ;$28;$9;$F;u32;ArUrSr;;0;4294967295;Version;%06u;Version HV40W;121114
+SHG1    ;$2C;$FF;$0;;;;;;;;;
+SHG1    ;$2C;$10;$0;u8;AUS;NV;0;1;State;[OFF,ON];Power;ON
+SHG1    ;$2C;$11;$0;s16;ArUrSr;;-32768;32767;Tdisp;%.2fC;Display temperature;49.89
+SHG1    ;$2C;$12;$0;s16;AUrS;NV;-2300;26600;Tset;%.2fC;Set temperature;49.90
+SHG1    ;$2C;$13;$0;u8;ArUrSr;;0;1;State;[Not Stable,Stable];Stable;Stable
+SHG1    ;$2C;$FF;$10;;;;;;;;Setup;
+SHG1    ;$2C;$14;$11;s16;AUrSr;NV;0;26600;TsetMax;%.2fC;Set temperature limit;70.00
+SHG1    ;$2C;$15;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;Kp;%g;Kp;8.5
+SHG1    ;$2C;$16;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;Ki;%g;Ki;1.25
+SHG1    ;$2C;$17;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;Kd;%g;Kd;5.22980213165283
+SHG1    ;$2C;$18;$11;u8;A;;0;1;Manual;[OFF,ON];Manual control;OFF
+SHG1    ;$2C;$19;$11;u16;ASr;;0;1023;PWMVal;%u;PWM duty cycle;0
+SHG1    ;$2C;$1A;$11;u16;A;NV;0;1023;PWMValMax;%u;PWM duty cycle limit;1023
+SHG1    ;$2C;$1B;$11;u16;AS;NV;1;1000;StabWnd;%.2f C;Stability window;0.07
+SHG1    ;$2C;$1C;$11;u16;AS;NV;0;120;StabTim;%u s;Time to stay in window before considered stable;30
+SHG1    ;$2C;$1D;$11;u8;A;;0;20;RepRate;%u;Reporting rate;20
+SHG1    ;$2C;$9;$F;u32;ArUrSr;;0;4294967295;Version;%06u;Firmware TK6;151013
+SHG2    ;$2D;$FF;$0;;;;;;;;;
+SHG2    ;$2D;$10;$0;u8;AUS;NV;0;1;State;[OFF,ON];Power;ON
+SHG2    ;$2D;$11;$0;s16;ArUrSr;;-32768;32767;Tdisp;%.2fC;Display temperature;47.85
+SHG2    ;$2D;$12;$0;s16;AUrS;NV;-2300;26600;Tset;%.2fC;Set temperature;47.85
+SHG2    ;$2D;$13;$0;u8;ArUrSr;;0;1;State;[Not Stable,Stable];Stable;Stable
+SHG2    ;$2D;$FF;$10;;;;;;;;Setup;
+SHG2    ;$2D;$14;$11;s16;AUrSr;NV;0;26600;TsetMax;%.2fC;Set temperature limit;70.00
+SHG2    ;$2D;$15;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;Kp;%g;Kp;8.5
+SHG2    ;$2D;$16;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;Ki;%g;Ki;1.25
+SHG2    ;$2D;$17;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;Kd;%g;Kd;5.22980213165283
+SHG2    ;$2D;$18;$11;u8;A;;0;1;Manual;[OFF,ON];Manual control;OFF
+SHG2    ;$2D;$19;$11;u16;ASr;;0;1023;PWMVal;%u;PWM duty cycle;0
+SHG2    ;$2D;$1A;$11;u16;A;NV;0;1023;PWMValMax;%u;PWM duty cycle limit;1023
+SHG2    ;$2D;$1B;$11;u16;AS;NV;1;1000;StabWnd;%.2f C;Stability window;0.07
+SHG2    ;$2D;$1C;$11;u16;AS;NV;0;120;StabTim;%u s;Time to stay in window before considered stable;30
+SHG2    ;$2D;$1D;$11;u8;A;;0;20;RepRate;%u;Reporting rate;20
+SHG2    ;$2D;$9;$F;u32;ArUrSr;;0;4294967295;Version;%06u;Firmware TK6;151013
+FHG1    ;$2E;$FF;$0;;;;;;;;;
+FHG1    ;$2E;$10;$0;u8;AUS;NV;0;1;State;[OFF,ON];Power;ON
+FHG1    ;$2E;$11;$0;s16;ArUrSr;;-32768;32767;Tdisp;%.2fC;Display temperature;51.19
+FHG1    ;$2E;$12;$0;s16;AUrS;NV;-2300;26600;Tset;%.2fC;Set temperature;51.20
+FHG1    ;$2E;$13;$0;u8;ArUrSr;;0;1;State;[Not Stable,Stable];Stable;Stable
+FHG1    ;$2E;$FF;$10;;;;;;;;Setup;
+FHG1    ;$2E;$14;$11;s16;AUrSr;NV;0;26600;TsetMax;%.2fC;Set temperature limit;70.00
+FHG1    ;$2E;$15;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;Kp;%g;Kp;8.5
+FHG1    ;$2E;$16;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;Ki;%g;Ki;1.25
+FHG1    ;$2E;$17;$11;float;A;NV;-3.40282346638529E38;3.40282346638529E38;Kd;%g;Kd;5.22980213165283
+FHG1    ;$2E;$18;$11;u8;A;;0;1;Manual;[OFF,ON];Manual control;OFF
+FHG1    ;$2E;$19;$11;u16;ASr;;0;1023;PWMVal;%u;PWM duty cycle;1023
+FHG1    ;$2E;$1A;$11;u16;A;NV;0;1023;PWMValMax;%u;PWM duty cycle limit;1023
+FHG1    ;$2E;$1B;$11;u16;AS;NV;1;1000;StabWnd;%.2f C;Stability window;0.07
+FHG1    ;$2E;$1C;$11;u16;AS;NV;0;120;StabTim;%u s;Time to stay in window before considered stable;30
+FHG1    ;$2E;$1D;$11;u8;A;;0;20;RepRate;%u;Reporting rate;20
+FHG1    ;$2E;$9;$F;u32;ArUrSr;;0;4294967295;Version;%06u;Firmware TK6;151013
+__license:6d326d0c052d520b41344f71c75605ba

@@ -1,0 +1,7 @@
+13:47:34;HV40W   :40;HVMAXCUR; 1H; Overcurrent protection
+13:47:34;NL30x   :8;WRONGF; 20H; Wrong ext. trigger frequency
+13:47:34;NL30x   :8;SHUTTER; 10H; Shutter interlock
+13:47:34;NL30x   :8;FLASH; 8H; Flash lamp error
+13:47:34;NL30x   :8;COOLING; 4H; COOLING
+13:47:34;NL30x   :8;OVERHEAT; 2H; OVERHEAT
+13:47:34;NL30x   :8;EMISSION; 1H; PS error, no emission
