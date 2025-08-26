@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from scipy.optimize import curve_fit
 from io import StringIO
 import h5py
 from scipy.integrate import cumulative_trapezoid
@@ -75,6 +76,71 @@ class Data_cleaner:
 class Bdot_actions(Data_cleaner):
     def __init__(self, data_cleaner_instance, **kwargs):
         self.data = data_cleaner_instance
+
+
+    def B_dot_calibration(self, N_turns, gain, R_p, r_helm, imaginary = False, **kwargs):
+        """
+        This function will take in the .TXT file attain from the waveform analyser and return the surface area of the bdot.
+        This surface area will be used for the reconstruction of the bdot. If imaginary is equal to false, it will first convert the
+        data to real and imaginary parts.
+
+        Must first get the clean data by running the clean_data_cal function. Data should have been passed initially so one can just
+        run the function without having to pass the data.
+        
+        N_turns --> The number of turns in the Bdot 
+        gain --> Amp gain if using a diff amp
+        R_p --> resistor measured across, kg * m^2 * s^-3 * A^-2
+        r_helm --> The helmholts coil radius that is used to drive the field
+        """
+        self.v_real = v_real
+        self.v_imaginary = v_imaginary
+
+        clean_data = clean_data_cal() # Run the function by itself to set the clean data equal to a variable to index later
+        angular_frequency = clean_data["Frequency"] * 2 * np.pi 
+        mag_for_calc = clean_data["Gain"] / 1000
+
+        if imaginary == False:
+            phase_for_calc = -clean_data["Phase"] * np.pi / 180
+
+            v_real = mag_for_calc * np.cos(phase_for_calc) # Real part
+            v_imaginary = mag_for_calc * np.sin(phase_for_calc) # Imaginary part
+        elif imaginary == True:
+            phase_for_calc = phase
+
+            v_real = mag_for_calc * np.cos(phase_for_calc)
+            v_imaginary = mag_for_calc * np.sin(phase_for_calc)
+            
+        # Now that the real and imaginary parts have been set, the next step is to calculate the surface area of the probe
+        defaults = { #Set as defaults as they usually do not change, in case they do can be initialized.
+            'mu_0': 4 # Vacuum permeability, kg * m * s^-2 * A^-2
+            'g': 10 #amp gain, unitless
+            'N': 1 # number of turns in probe, unitless
+            'R_p': 51 # Resistor measured across, kg * m^2 * s^-3 * A^-2
+            'r': 0.048 # helmholtz coil radius, m
+        }
+        params = {key:kwargs.get(key, default) for key, default in defaults.items()}
+
+        g = params['g']
+        N = params['N']
+        R_p = params['R_p']
+        r = params['r']
+
+        factor = (g * N * mu_0 * 16) / (R_p * r * (5 ** 1.5))
+
+        #The next step is to do a best fit along the imaginary part of the data
+        def linear_func(x,m,b)
+            return m * x + b 
+        
+        ppot, pcov = curve_fit(linear_func,angular_frequency v_imaginary)
+        m,b = ppot # In this case, m is the effective area
+        effective_area = m 
+        
+        return effective_area
+        
+        
+
+
+
     def B_field_reconstruct(voltage, time, **kwargs):
         """
         Function takes in the voltage and time and then averages it to find the average field for the run
@@ -124,19 +190,16 @@ class Bdot_actions(Data_cleaner):
         return field_average
 
 
-
-class Plotting_Functions(Data_cleaner):
-    def __init__(self, data_cleaner_instance, **kwargs):
-        self.data = data_cleaner_instance #Allows you to access all the data that has been inputted into Data_cleaner
-
     def max_b_field(self, **kwargs):
         """
         Function is called on itself. This function gives out the max B-field of the run. Must specify which channel the B-dot was connected too.
         Params:
             **kwargs: This helps specify which channel Bdot is in. If not specified, used MSO:Ch4:Trace as default.
             Calls on the B_field_reconstruct function to 
+
+        Returns:
+            returns the max b-field of the field calibrated using the Bdot. 
         """
-        plt.figure(figsize = (7,10))
         channels = kwargs.get('Channels') #Can set it equal to a value to attain the values in the list
         if channels:
             if len(channels) != 2:
@@ -153,4 +216,37 @@ class Plotting_Functions(Data_cleaner):
             time = self.data.MSO24_Time
             field_average = Bdot_actions.B_field_reconstruct(voltage, time)
 
-        return field_average
+        max_field = np.max(field_average)
+        return max_field
+
+
+class Plotting_Functions(Data_cleaner):
+    def __init__(self, data_cleaner_instance, bdot_actions_instance, **kwargs):
+        self.data = data_cleaner_instance #Allows you to access all the data that has been inputted into Data_cleaner
+        self.Bdot_actions = bdot_actions_instance
+    
+    def plot_all_runs(self, *kwargs):
+        """
+            This function will plot all the runs in one file and show the standard deviation and other paramaters of the data
+        """
+        fig, ax = plt.subplots(2,1)
+
+        time = self.data['MSO24:Time'][0]
+        field = Bdot_actions.B_field_reconstruct()
+
+        for trace in range(len(field[0])):
+            ax[0].plot(time, field[0][i])
+        ax[0].set_title('B-Field vs Time: All runs')
+        ax[0].set_xlabel('Time')
+        ax[0].set_ylabel('Field Data')
+
+        
+
+
+
+
+
+
+
+
+
