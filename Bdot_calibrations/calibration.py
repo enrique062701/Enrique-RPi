@@ -4,6 +4,7 @@ integrate the B-field to rebuild the magnetic field using Eric's paper.
 '''
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 import os
 import h5py
 from scipy.integrate import cumulative_trapezoid
@@ -120,7 +121,7 @@ if __name__ == "__main__":
             print('It went throught the if statement')
             voltage_clean = voltage[2:9]
             time_clean = time[2:9]
-            field = B_field_reconstruct(voltage_clean, time_clean, -0.000447134918, 1, 1, -3.1174319180e-08, average = True)
+            field = B_field_reconstruct(voltage_clean, time_clean, -0.000447134918, 1, 1, -3.1174319180e-08, average = False)
             max_ = np.max(field)
             print(max_, 'This is the max for this case')
             field_max.append(max_)
@@ -128,7 +129,7 @@ if __name__ == "__main__":
             voltage_list.append(voltage_clean)
             time_list.append(time_clean)
         else:
-            field = B_field_reconstruct(voltage, time, -0.000447134918, 1, 1, -3.1174319180e-08, average = True)
+            field = B_field_reconstruct(voltage, time, -0.000447134918, 1, 1, -3.1174319180e-08, average = False)
             max_ = np.max(field)
             field_max.append(max_)
             field_list.append(field)
@@ -136,6 +137,7 @@ if __name__ == "__main__":
             time_list.append(time)
 
     plt.plot(positions, field_max, label = 'field strength')
+    np.save('two_coils_data', positions, field_max)
     plt.legend()
     plt.title('Position vs Field - 100V')
     plt.xlabel('Positions (cm)')
@@ -178,10 +180,11 @@ if __name__ == "__main__":
     plt.xlabel('Positions (cm)')
     plt.ylabel('Field (T)')
     plt.show()
+    
 
 #-------------------------------------------------------------------------------------------------------------------------------
     #Looking through 
-    file_number = 20
+    file_number = 1
 
     weird_one = f'{file_path}/magnetZscan-{file_number}cm-2025-06-16.h5'
     data_w = h5py.File(weird_one, 'r')
@@ -192,7 +195,7 @@ if __name__ == "__main__":
     for i in range(len(voltage)):
         plt.plot(time[0], voltage[i], label = f'trace{i}')
         plt.title(f'Trace {i} for {file_number}')
-        plt.show()
+        #plt.show()
 
 
 
