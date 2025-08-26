@@ -122,11 +122,11 @@ if __name__ == "__main__":
     
     magnet_current = []
     current_max_array = []
-    voltage_list = []
-    time_list = []
-    field_list = []
-    field_max = []
-    max_test = []
+    voltage_list_array = []
+    time_list_array = []
+    field_list_array = []
+    field_max_array = []
+    max_test_array = []
 
     magnet_current_array = np.array(magnet_current)
     current_max_array = np.array(current_max_array)
