@@ -78,7 +78,7 @@ class Bdot_actions(Data_cleaner):
         self.data = data_cleaner_instance
 
 
-    def B_dot_calibration(self, N_turns, gain, R_p, r_helm, imaginary = False, **kwargs):
+    def B_dot_calibration(self, imaginary = False, **kwargs):
         """
         This function will take in the .TXT file attain from the waveform analyser and return the surface area of the bdot.
         This surface area will be used for the reconstruction of the bdot. If imaginary is equal to false, it will first convert the
@@ -112,10 +112,10 @@ class Bdot_actions(Data_cleaner):
             
         # Now that the real and imaginary parts have been set, the next step is to calculate the surface area of the probe
         defaults = { #Set as defaults as they usually do not change, in case they do can be initialized.
-            'mu_0': 4 # Vacuum permeability, kg * m * s^-2 * A^-2
-            'g': 10 #amp gain, unitless
-            'N': 1 # number of turns in probe, unitless
-            'R_p': 51 # Resistor measured across, kg * m^2 * s^-3 * A^-2
+            'mu_0': 4, # Vacuum permeability, kg * m * s^-2 * A^-2
+            'g': 10, #amp gain, unitless
+            'N': 1, # number of turns in probe, unitless
+            'R_p': 51, # Resistor measured across, kg * m^2 * s^-3 * A^-2
             'r': 0.048 # helmholtz coil radius, m
         }
         params = {key:kwargs.get(key, default) for key, default in defaults.items()}
@@ -128,18 +128,15 @@ class Bdot_actions(Data_cleaner):
         factor = (g * N * mu_0 * 16) / (R_p * r * (5 ** 1.5))
 
         #The next step is to do a best fit along the imaginary part of the data
-        def linear_func(x,m,b)
+        def linear_func(x,m,b):
             return m * x + b 
         
-        ppot, pcov = curve_fit(linear_func,angular_frequency v_imaginary)
+        ppot, pcov = curve_fit(linear_func,angular_frequency, v_imaginary)
         m,b = ppot # In this case, m is the effective area
         effective_area = m 
         
         return effective_area
         
-        
-
-
 
     def B_field_reconstruct(voltage, time, **kwargs):
         """

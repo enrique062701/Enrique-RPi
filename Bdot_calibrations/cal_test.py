@@ -21,7 +21,7 @@ Bdot = Bdot_actions(Run1_data)
 field = Bdot_actions.B_field_reconstruct(MSO24_Ch4, MSO24_time)
 print(field, 'This is the field')
 
-plot = Plotting_Functions(Run1_data)
-max_b_field = plot.max_b_field(Channels = ['LeCroy:Ch1:Trace', 'LeCroy:Ch2:Trace'])
-print(max_b_field)
+Bdot_actions = Bdot_actions(Data_cleaner)
+effective_area = Bdot_actions.B_dot_calibration(imaginary = False)
+print(f'The effective area is: {effective_area}')
 
