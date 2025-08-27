@@ -74,8 +74,13 @@ class Data_cleaner:
 
 
 class Bdot_actions(Data_cleaner):
-    def __init__(self, data_cleaner_instance, **kwargs):
-        self.data = data_cleaner_instance
+    def __init__(self, calibration_data, HDF5_data_, **kwargs):
+        """
+        The 'super()' is a built-in class in python that returns a proxy objext that delegates method calls
+        to a parent method. This allows you to call 'Data_cleaner' without having to call Data_cleaner itself.
+        This makes it cleaner and easier than making them completely independent.
+        """
+        super().__init__(calibration_data, HDF5_data_, **kwargs)
 
 
     def B_dot_calibration(self, imaginary = False, **kwargs):
@@ -92,10 +97,8 @@ class Bdot_actions(Data_cleaner):
         R_p --> resistor measured across, kg * m^2 * s^-3 * A^-2
         r_helm --> The helmholts coil radius that is used to drive the field
         """
-        self.v_real = v_real
-        self.v_imaginary = v_imaginary
-
-        clean_data = clean_data_cal() # Run the function by itself to set the clean data equal to a variable to index later
+        
+        clean_data = self.clean_data_cal() # Run the function by itself to set the clean data equal to a variable to index later
         angular_frequency = clean_data["Frequency"] * 2 * np.pi 
         mag_for_calc = clean_data["Gain"] / 1000
 
@@ -105,11 +108,13 @@ class Bdot_actions(Data_cleaner):
             v_real = mag_for_calc * np.cos(phase_for_calc) # Real part
             v_imaginary = mag_for_calc * np.sin(phase_for_calc) # Imaginary part
         elif imaginary == True:
-            phase_for_calc = phase
+            phase_for_calc = cleand_data["Phase"]
 
             v_real = mag_for_calc * np.cos(phase_for_calc)
             v_imaginary = mag_for_calc * np.sin(phase_for_calc)
             
+        self.v_real = v_real
+        self.v_imaginary = v_imaginary
         # Now that the real and imaginary parts have been set, the next step is to calculate the surface area of the probe
         defaults = { #Set as defaults as they usually do not change, in case they do can be initialized.
             'mu_0': 4, # Vacuum permeability, kg * m * s^-2 * A^-2
@@ -120,6 +125,7 @@ class Bdot_actions(Data_cleaner):
         }
         params = {key:kwargs.get(key, default) for key, default in defaults.items()}
 
+        mu_0 = params['mu_0']
         g = params['g']
         N = params['N']
         R_p = params['R_p']
@@ -138,7 +144,7 @@ class Bdot_actions(Data_cleaner):
         return effective_area
         
 
-    def B_field_reconstruct(voltage, time, **kwargs):
+    def B_field_reconstruct(self, voltage, time, **kwargs):
         """
         Function takes in the voltage and time and then averages it to find the average field for the run
         Params:
@@ -218,10 +224,10 @@ class Bdot_actions(Data_cleaner):
 
 
 class Plotting_Functions(Data_cleaner):
-    def __init__(self, data_cleaner_instance, bdot_actions_instance, **kwargs):
-        self.data = data_cleaner_instance #Allows you to access all the data that has been inputted into Data_cleaner
-        self.Bdot_actions = bdot_actions_instance
-    
+    def __init__(self, calibration_data, HDF5_data_, **kwargs):
+        super().__init__(calibration_data, HDF5_data_, **kwargs)
+
+
     def plot_all_runs(self, *kwargs):
         """
             This function will plot all the runs in one file and show the standard deviation and other paramaters of the data
