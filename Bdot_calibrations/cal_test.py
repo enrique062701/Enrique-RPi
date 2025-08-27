@@ -35,6 +35,6 @@ MSO24_Ch4 = Bdot.MSO24_Ch4_Trace
 MSO24_time = Bdot.MSO24_Time
 
 field = Bdot.B_field_reconstruct(MSO24_Ch4, MSO24_time)
-print(f'The reconstructed field is: {field}')
+print(f'The reconstructed field is: {field[0]}')
 plt.plot(field)
-plt.show()
+#plt.show()

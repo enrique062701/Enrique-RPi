@@ -81,6 +81,21 @@ class Bdot_actions(Data_cleaner):
         This makes it cleaner and easier than making them completely independent.
         """
         super().__init__(calibration_data, HDF5_data_, **kwargs)
+    
+    # The following two functions: re_curve and im_curve are from Nathans code which are part of his professors paper. Could not find the original citation to cite.
+    def re_curve(self, w, a, tau, tau_s):
+        return self.factor * (a * (w**2) * (tau_s - tau)) / (1 + (tau_s * w) ** 2)
+
+    def im_curve(self, w, a, tau, tau_s):
+        return self.factor * (a * tau * tau_s * (w**3) + a * w) / (1 + (tau_s * w) ** 2)
+
+    def combined_curve(self, w_all, a, tau, tau_s):
+        n = len(w_all) // 2
+        w_re, w_im = w_all[:n], w_all[n:]
+        re_model = self.re_curve(w_re, a, tau, tau_s)
+        im_model = self.im_curve(w_im, a, tau, tau_s)
+        return np.concatenate([re_model, im_model])
+
 
 
     def B_dot_calibration(self, imaginary = False, **kwargs):
@@ -117,7 +132,7 @@ class Bdot_actions(Data_cleaner):
         self.v_imaginary = v_imaginary
         # Now that the real and imaginary parts have been set, the next step is to calculate the surface area of the probe
         defaults = { #Set as defaults as they usually do not change, in case they do can be initialized.
-            'mu_0': 4, # Vacuum permeability, kg * m * s^-2 * A^-2
+            'mu_0': 4 * np.pi * 10e-7, # Vacuum permeability, kg * m * s^-2 * A^-2
             'g': 10, #amp gain, unitless
             'N': 1, # number of turns in probe, unitless
             'R_p': 51, # Resistor measured across, kg * m^2 * s^-3 * A^-2
@@ -131,17 +146,31 @@ class Bdot_actions(Data_cleaner):
         R_p = params['R_p']
         r = params['r']
 
-        factor = (g * N * mu_0 * 16) / (R_p * r * (5 ** 1.5))
+        self.factor = (g * N * mu_0 * 16) / (R_p * r * (5 ** 1.5))
 
         #The next step is to do a best fit along the imaginary part of the data
-        def linear_func(x,m,b):
-            return m * x + b 
         
-        ppot, pcov = curve_fit(linear_func,angular_frequency, v_imaginary)
-        m,b = ppot # In this case, m is the effective area
-        effective_area = m 
+        xdata = np.concatenate([angular_frequency, angular_frequency])
+        ydata = np.concatenate([v_real, v_imaginary])
+
+        # Initial guesses
+        p0 = [3e-4, 6e-8, -1e-8]
+        sigma = np.ones_like(ydata)
+
+        popt, pcov = curve_fit(
+            lambda w_all, a, tau, tau_s: self.combined_curve(w_all, a, tau, tau_s), 
+            xdata, ydata, p0=p0, sigma = sigma, absolute_sigma = True
+        )
+
+
+        a_fit, tau_fit, tau_s_fit = popt
+        effective_area = a_fit
+
+        self.effective_area = effective_area
+        self.tau_fit = tau_fit
+        self.tau_s_fit = tau_s_fit
         
-        return effective_area
+        return effective_area, 
         
 
     def B_field_reconstruct(self, voltage, time, **kwargs):
