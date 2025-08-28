@@ -188,10 +188,10 @@ class Bdot_actions(Data_cleaner):
             field: The reconstructed B-field. Uses equation 10 from Eric Everson's Bdot paper.
         """
         defaults = {
-            'a': -0.000447134918,
+            'a': -0.000447134918, #self.effective_area
             'g': 1,
             'N': 1,
-            'tau_s': -3.1174319180e-08,
+            'tau_s': -3.1174319180e-08, #self.tau_s_fit
         }
         params = {key:kwargs.get(key, default) for key, default in defaults.items()}
         
