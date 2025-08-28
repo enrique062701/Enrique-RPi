@@ -257,25 +257,20 @@ class Plotting_Functions(Data_cleaner):
         super().__init__(calibration_data, HDF5_data_, **kwargs)
 
 
-    def plot_all_runs(self, *kwargs):
+    def plot_all_runs(self, **kwargs):
         """
             This function will plot all the runs in one file and show the standard deviation and other paramaters of the data
         """
         fig, ax = plt.subplots(2,1)
 
-        time = self.data['MSO24:Time'][0]
-        field = Bdot_actions.B_field_reconstruct()
+        time = self.HDF5_data['MSO24:Time'][0]
+        field = Bdot_actions.B_field_reconstruct(self.HDF5_data['MSO24:Ch4:Trace'], self.HDF5_data['MSO24:Time'])
 
         for trace in range(len(field[0])):
             ax[0].plot(time, field[0][i])
         ax[0].set_title('B-Field vs Time: All runs')
         ax[0].set_xlabel('Time')
         ax[0].set_ylabel('Field Data')
-
-        
-
-
-
 
 
 
