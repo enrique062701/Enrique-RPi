@@ -23,10 +23,10 @@ except OSError:
     print('Can port not found, double check if port is connected')
 print('Connected to can0, ready for data taking.')
 
-duration = 30
+duration = 15
 end_time = time.time() + duration
 
-with open("can_log_change_burst_mode.csv", "w", newline = "") as f:
+with open("can_log_change_burst_modeV2.csv", "w", newline = "") as f:
     writer = csv.writer(f)
     writer.writerow(["Timestamp", "Atribration_id", "dlc", "data"])
 
@@ -42,6 +42,6 @@ with open("can_log_change_burst_mode.csv", "w", newline = "") as f:
             print(msg)
 
 bus.shutdown()
-print('Saved data to can_log_change_burst_mode.csv')
+print('Saved data to can_log_change_burst_modeV2.csv')
 
 
