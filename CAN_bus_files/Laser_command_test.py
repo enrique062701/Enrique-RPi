@@ -7,9 +7,9 @@ import can
 import time
 
 # Connect to the can device first
-os.system('sudo ip link set can0 down')
-os.system('sudo ip link set can0 type can bitrate 1000000')
-os.system('sudo ip link set can0 up')
+#os.system('sudo ip link set can0 down')
+#os.system('sudo ip link set can0 type can bitrate 1000000')
+#os.system('sudo ip link set can0 up')
 
 try:
     bus = can.interface.Bus(channel = 'can0', interface = 'socketcan')
