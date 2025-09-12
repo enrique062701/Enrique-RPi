@@ -31,21 +31,27 @@ bus.send(initial_message)
 while True:
     try:
         # The loop will first send an intial message to see if the "controller" is connected.
+        initial_message = can.Message(arbitration_id = 0x19000410, data= b"hello", is_extended_id = True)
+        bus.send(initial_message)
+        print('Sending initial message')
+
         message_response = bus.recv(timeout = 2)
         if message_response is None:
             continue
         # Now check if the laser replies. If the laser replies then will continuosly send messages in the can-bus system
-        if message_response.arbitration_id == '0x18820810':
+        if message_response.arbitration_id == 0x18820810:
             try:
-                response = message_response.decode("ascii")
+                data_bytes = message_response.data
+                response = data_bytes.decode("ascii")
                 if response == 'Copy':
                     while True:
                         for message in message_cycle:
                             msg = can.Message(arbitration_id = 0x19000410, data = bytes.fromhex(message), is_extended_id = True)
                             bus.send(msg)
+                            time.sleep(0.002)
                             
             except UnicodeDecodeError:
-                print(f"Got no text data: {message_received.hex()}")
+                print(f"Got no text data: {data_bytes.hex()}")
 
     except KeyboardInterrupt:
         break
