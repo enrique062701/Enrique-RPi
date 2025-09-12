@@ -26,7 +26,6 @@ try:
     bus = can.interface.Bus(channel = 'can0', interface = 'socketcan')
 except OSError:
     print('Can not create bus connection')
-    exit()
 
 print('Bus connection has been created')
 
@@ -34,12 +33,22 @@ print('Bus connection has been created')
 while True:
     try:
         message_received = bus.recv(timeout = 1)
-        if message_received is None:
-            # If no message is recieved from the controller it will just cycle its ID at 2Hz
-            echo_ = can.Message(arbitration_id = '0x18820810', data = b'ID', is_extended_id = True)
-            time.sleep(0.5)
-            
 
+        print('Looking for initial message')
+        if message_received is None:
+            while True:
+            # If no message is recieved from the controller it will just cycle its ID at 2Hz
+                echo_ = can.Message(arbitration_id = 0x18820810, data = b'ID', is_extended_id = True)
+                bus.send(echo_)
+                time.sleep(0.5)
+
+                message_received = bus.recv(timeout = 1)
+
+                if message_received is not None:
+                    if message_received.arbitration_id == 0x19000410:
+                        print('Controller detected.')
+                        break
+       
         if message_received.arbitration_id == '0x19000410':
             try:
                 # This checks if the controller sent an initial message 'hello' indicating controller is active
@@ -56,8 +65,7 @@ while True:
 
             except UnicodeDecodeError:
                 print(f"Got no text data: {message_received.hex()}")
-        
-    
+         
 
     except KeyboardInterrupt:
         print("Program stopped")
