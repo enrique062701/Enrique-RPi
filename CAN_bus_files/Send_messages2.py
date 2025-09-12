@@ -61,7 +61,9 @@ while True:
                     print('Copy has been sent.')
                     while True:
                         for message in message_cycle:
-                            msg = can.Message(arbitration_id = 0x18820810, data = bytes.fromhex(message), is_extended_id = True, is_fd = True)
+                            data = bytes.fromhex(message)
+                            dlc = len(data)
+                            msg = can.Message(arbitration_id = 0x18820810, data = data, is_extended_id = True)
                             bus.send(msg)
                             time.sleep(0.002)
                     
