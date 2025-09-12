@@ -10,12 +10,6 @@ import time
 import csv
 
 
-
-# The first step is to set the bitrate to 1000000
-os.system('sudo ip link set can0 down')
-os.system('sudo ip link set can0 type can bitrate 1000000')
-os.system('sudo ip link set can0 up')
-
 # Next is to check if the port is up
 try:
     bus = can.interface.Bus(channel = 'can0', interface = 'socketcan')
@@ -26,9 +20,9 @@ print('Connected to can0, ready for data taking.')
 duration = 15
 end_time = time.time() + duration
 
-with open("can_log_change_burst_modeV2.csv", "w", newline = "") as f:
+with open("idle_main_menu.csv", "w", newline = "") as f:
     writer = csv.writer(f)
-    writer.writerow(["Timestamp", "Atribration_id", "dlc", "data"])
+    writer.writerow(["Timestamp", "Arbitration_id", "dlc", "data"])
 
     while time.time() < end_time:
         msg = bus.recv(timeout = 1.0)
@@ -42,6 +36,6 @@ with open("can_log_change_burst_modeV2.csv", "w", newline = "") as f:
             print(msg)
 
 bus.shutdown()
-print('Saved data to can_log_change_burst_modeV2.csv')
+print('Saved data to idle_main_menu.csv')
 
 
