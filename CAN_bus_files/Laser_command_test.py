@@ -44,7 +44,6 @@ for command in commands:
     try:
         bus.send(msg)
         print(f'Message: {command} has been sent')
-        time.sleep(0.001)
     except can.CanError:
         print('Message not sent.')
 

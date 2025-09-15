@@ -17,10 +17,10 @@ except OSError:
     print('Can port not found, double check if port is connected')
 print('Connected to can0, ready for data taking.')
 
-duration = 15
+duration = 20
 end_time = time.time() + duration
 
-with open("laser_startup.csv", "w", newline = "") as f:
+with open("unplug_plug_controller.csv", "w", newline = "") as f:
     writer = csv.writer(f)
     writer.writerow(["Timestamp", "Arbitration_id", "dlc", "data"])
 
@@ -36,6 +36,6 @@ with open("laser_startup.csv", "w", newline = "") as f:
             print(msg)
 
 bus.shutdown()
-print('Saved data to laser_startup.csv')
+print('Saved data to unplug_plug_controller.csv')
 
 

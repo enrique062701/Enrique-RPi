@@ -1,24 +1,23 @@
 """
-This code will mimick the controller and try to send commands from it as well.
+This will mimick the controller.
 """
-import os
+
 import can
+import os
 import time
-import epics
 import csv
-import numpy as np 
-
-# Will not set the can port down
-
-channel = 'can0'
-
-controller_messages = [] # This will contain all the messages that the controller sends.
 
 
+try:
+    bus = can.interface.Bus(channel = 'can0', interface = 'socketcan')
+except OSError:
+    print('Cannot find PiCAN board. Check connections.')
 
+print('Connection complete. Will now send command.')
 
+while True:
+    try:
+        message = bus.recv()
 
-
-
-
+        if message.a
 
