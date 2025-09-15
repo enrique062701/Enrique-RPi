@@ -20,7 +20,7 @@ print('Connected to can0, ready for data taking.')
 duration = 15
 end_time = time.time() + duration
 
-with open("idle_main_menu.csv", "w", newline = "") as f:
+with open("laser_startup.csv", "w", newline = "") as f:
     writer = csv.writer(f)
     writer.writerow(["Timestamp", "Arbitration_id", "dlc", "data"])
 
@@ -36,6 +36,6 @@ with open("idle_main_menu.csv", "w", newline = "") as f:
             print(msg)
 
 bus.shutdown()
-print('Saved data to idle_main_menu.csv')
+print('Saved data to laser_startup.csv')
 
 
