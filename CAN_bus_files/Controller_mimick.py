@@ -19,5 +19,10 @@ while True:
     try:
         message = bus.recv()
 
-        if message.a
+        if message.arbitration_id == 0x1803280a:
+            initial_message = can.Message(arbitration_id == 0x3080a, data = bytes.fromhex('00000000'), is_extended_id = True)
+            bus.send(initial_message)
+            
+            
 
+1100
