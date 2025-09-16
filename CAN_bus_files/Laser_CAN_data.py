@@ -20,7 +20,7 @@ print('Connected to can0, ready for data taking.')
 duration = 20
 end_time = time.time() + duration
 
-with open("unplug_plug_controller.csv", "w", newline = "") as f:
+with open("start_with_no_control.csv", "w", newline = "") as f:
     writer = csv.writer(f)
     writer.writerow(["Timestamp", "Arbitration_id", "dlc", "data"])
 
@@ -36,6 +36,6 @@ with open("unplug_plug_controller.csv", "w", newline = "") as f:
             print(msg)
 
 bus.shutdown()
-print('Saved data to unplug_plug_controller.csv')
+print('Saved data to start_with_no_control.csv')
 
 
