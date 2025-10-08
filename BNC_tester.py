@@ -196,7 +196,7 @@ try:
         reg_width = width_loop(channel_width, USER, delay)
         small_width = width_loop(channel_width_small, USER, delay)
         limits_width = width_loop(channel_width_limits, USER, delay)
-        np.savez(f"Average_delay_delay_{delay}.npz", Delays_normal = reg_delay, Small_delay = small_delay, Limits_delay = limits_delay, Width_normal = reg_width
+        np.savez(f"Average_delay_delay_{delay}.npz", Delays_normal = reg_delay, Small_delay = small_delay, Limits_delay = limits_delay, Width_normal = reg_width,
         Small_width = small_width, Limits_width = limits_width)
         
 
