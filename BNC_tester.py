@@ -18,7 +18,7 @@ MAX = 999.99999999975
 
 Delays = np.arange(0, MAX, 1) #Do intervals of 1s for the first rounf
 Delays_small = np.arange(0, 0.5, 0.0001) # This will be 5,000 trials. 
-Delay_limits = [1, 0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001, 0.00000001, 0.000000001, 0.0000000001, 0.00000000001, 0.000000000001] # This will test the precision of the bnc
+Delay_limits = [1, 0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001, 0.00000001, 0.000000001, 0.0000000001, 0.00000000001] # This will test the precision of the bnc
 
 
 # The first step is too initialize dictionaries for corresponding channels and values. 
@@ -163,7 +163,7 @@ def width_loop(dictionary, USER, delay):
                 print(f"Error occured {e}. It occured at {count} with delay {value[count]}")
 
         target_value = values[-1] # Gets the final value in the list
-        timeout = 100 # Timout after 100s.
+        timeout = 500 # Timout after 100s.
         precision = 1e-9 # Nanosecond precision for the BNC 575
 
         while True:
@@ -175,7 +175,10 @@ def width_loop(dictionary, USER, delay):
                 total_time = time.time() - start_time2
                 width_per_channel.append(total_time) # Append the time it takes for the device to catch up
                 print(f"The BNC has now caught up in values. The BNC RBV is: {current_value} and the value is: {value}")
-                break        
+                break
+            if time.time() - start_time2 < timeout:
+                print(f"Timeout has been reached. Breaking the loop")
+                break
 
         print(f"Done with channel: {channel}. It took a totla of {time.time() - start_time2} to complete")
 
@@ -190,17 +193,17 @@ try:
     print(delays)
     averages = []
     for delay in delays:
-        reg_delay = delay_loop(channel_delays, USER, delay)
-        small_delay = delay_loop(channel_delays_small, USER, delay)
+        #reg_delay = delay_loop(channel_delays, USER, delay)
+        #small_delay = delay_loop(channel_delays_small, USER, delay)
         limits_delay = delay_loop(channel_delays_limits, USER, delay)
-        reg_width = width_loop(channel_width, USER, delay)
-        small_width = width_loop(channel_width_small, USER, delay)
+        #reg_width = width_loop(channel_width, USER, delay)
+        #small_width = width_loop(channel_width_small, USER, delay)
         limits_width = width_loop(channel_width_limits, USER, delay)
-        np.savez(f"Average_delay_delay_{delay}.npz", Delays_normal = reg_delay, Small_delay = small_delay, Limits_delay = limits_delay, Width_normal = reg_width,
-        Small_width = small_width, Limits_width = limits_width)
+        #np.savez(f"Average_delay_delay_{delay}.npz", Delays_normal = reg_delay, Small_delay = small_delay, Limits_delay = limits_delay, Width_normal = reg_width,
+        #Small_width = small_width, Limits_width = limits_width)
         
 
-
+# Notice that there is a problem with the limits in the width. Crashes when the width changes to 1e-12
 
 
 
