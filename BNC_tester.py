@@ -188,6 +188,17 @@ def width_loop(dictionary, USER, delay):
     return average    
 
             
+def all_loop(USER, channels):
+    """
+    This function will generate random numbers to feed into all of the channels at the same time instead of just one 
+    channel at a time.
+    """
+    channels = np.linspace(1, channels, 1)
+    delays = np.random.default_rng().uniform(0.001,0.01, size = 100)
+    
+
+
+
 try:
     delays = np.arange(0.01, 0.1, 0.01)
     print(delays)
