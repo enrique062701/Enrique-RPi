@@ -12,9 +12,6 @@ See inline comments for the function of the member functions
 Header interpretation is based on PP's previous internet scrapings in C++ program ScopeData, in particular
 "P:\W\ScopeData\Scopedata\Lecroy_Binary_Header.h"
 
-Created on Wed Aug 31, 2016
-
-@author: Patrick
 
 PyVisa documentation:                                https://media.readthedocs.org/pdf/pyvisa/1.6/pyvisa.pdf
 LeCroy Automation Command Reference Manual:          http://cdn.teledynelecroy.com/files/manuals/automation_command_ref_manual_ws.pdf
@@ -33,6 +30,8 @@ other notes:
 NI VISA Manuals:
   NI-VISA User Manual                   http://digital.ni.com/manuals.nsf/websearch/266526277DFF74F786256ADC0065C50C
   NI-VISA Programmer Reference Manual   http://digital.ni.com/manuals.nsf/websearch/87E52268CF9ACCEE86256D0F006E860D
+
+Enrique C.  
 
 """
 
@@ -189,7 +188,8 @@ class LeCroy_Scope:
 			self.rm = None
 		self.rm_status = False
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
+#########################################################################################################################################
 
 	def rm_list_resources(self):
 		""" this is a very slow process --AND-- LeCroy scopes using VISA Passport do not show up in this list, anyway """
@@ -199,7 +199,8 @@ class LeCroy_Scope:
 		t1 = time.time()
 		if self.verbose and (t1-t0 > 1): print('    .............................%6.3g sec' % (t1-t0))
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
+
 	#todo: how to find VICP address automatically?
 
 	def rm_open(self, ipv4_addr)  -> bool:
@@ -239,7 +240,7 @@ class LeCroy_Scope:
 			return False,0,0
 		return True
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def rm_close(self):
 		""" close the resource manager; should eventually be called any time rm_open is called """
@@ -247,7 +248,7 @@ class LeCroy_Scope:
 			self.rm.close()
 			self.rm = None
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def screen_dump(self, white_background = False, png_fn = 'scope_screen_dump.png', full_screen = True):
 		""" obtain a screen dump from the scope, in the form of a .png file
@@ -279,7 +280,7 @@ class LeCroy_Scope:
 		plt.subplots_adjust(left=0.0, right=1.0, bottom=0.0, top=1.0)
 		plt.imshow(x)
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def write_status_msg(self, msg):
 		""" send a message to the status line on the scope; nominally this should be < 50 chars, but not checked
@@ -289,7 +290,7 @@ class LeCroy_Scope:
 		else:
 			self.scope.write('MESSAGE "'+msg+'"')
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def validate_channel(self, Cn)  -> str:
 		""" convenience function, returns canonical channel label, C1, C2, C3, or C4
@@ -304,7 +305,7 @@ class LeCroy_Scope:
 		err = '**** validate_channel(): channel = "' + Cn + '" is not allowed, must be C1-4'
 		raise(RuntimeError(err)).with_traceback(sys.exc_info()[2])
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def validate_trace(self, tr)  -> str:
 		""" convenience function, returns canonical trace label, which is broader than a channel label
@@ -320,7 +321,7 @@ class LeCroy_Scope:
 		err = '**** validate_trace(): trace name "' + tr + '" is unknown'
 		raise(RuntimeError(err)).with_traceback(sys.exc_info()[2])
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def max_samples(self, N = 0) -> int:
 		""" mostly used for determining the number of samples the scope expects to acquire.
@@ -335,8 +336,7 @@ class LeCroy_Scope:
 		# find out what happened:
 		return int(self.scope.query('VBS? "return=app.Acquisition.Horizontal.NumPoints"'))
 
-	#-------------------------------------------------------------------------
-
+#########################################################################################################################################
 
 	def displayed_channels(self)  -> ():    # returns a tuple of channel names, e.g. ('C1', 'C4')
 		""" return displayed CHANNELS only, ignoring math, memory, etc """
@@ -354,6 +354,7 @@ class LeCroy_Scope:
 		
 		return channels
 
+#########################################################################################################################################
 
 	def displayed_traces(self)  -> ():    # returns a tuple of trace names, e.g. ('C1', 'C4', 'F1')
 		""" return displayed TRACES, including math, memory, etc. """
@@ -365,7 +366,7 @@ class LeCroy_Scope:
 				traces += (tr,)
 		return traces
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def vertical_scale(self, trace) -> float:
 		""" get vertical scale setting for the trace
@@ -374,6 +375,7 @@ class LeCroy_Scope:
 		scale = float(self.scope.query('VBS? "Return=app.Acquisition.'+Tn+'.VerScale"'))
 		return scale
 
+#########################################################################################################################################
 
 	def set_vertical_scale(self, trace, scale) -> float:
 		""" set vertical scale setting for the trace
@@ -383,7 +385,7 @@ class LeCroy_Scope:
 		self.scope.write('VBS "app.Acquisition.'+Tn+'.VerScale='+str(scale)+'"')
 		return self.vertical_scale(trace)   # it may not be what we asked for
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def averaging_count(self, channel='C1') -> int:
 		""" get count of averages specified for the channel, default = read from channel 'C1'
@@ -393,6 +395,7 @@ class LeCroy_Scope:
 		#todo: should this deal with traces rather than channels?
 		return NSweeps
 
+#########################################################################################################################################
 
 	def set_averaging_count(self, channel='C1', NSweeps=1):
 		""" set count of averages for a given channel (not used)
@@ -404,6 +407,7 @@ class LeCroy_Scope:
 			NSweeps = 1000000
 		self.scope.write('VBS "app.Acquisition.'+Cn+'.AverageSweeps='+str(NSweeps)+'"')
 
+#########################################################################################################################################
 
 	def max_averaging_count(self) -> (int,int):
 		""" get maximum averaging count across all displayed channels
@@ -423,7 +427,7 @@ class LeCroy_Scope:
 			raise(RuntimeError(err)).with_traceback(sys.exc_info()[2])
 		return NSweeps, ach
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def wait_for_max_sweeps(self, aux_text='', timeout=100):
 		""" determine maximum averaging count across all displayed channels, then wait for that many sweeps
@@ -440,6 +444,7 @@ class LeCroy_Scope:
 		self.write_status_msg(aux_text + msg)
 		return timed_out,N
 	
+#########################################################################################################################################
 
 	def wait_for_sweeps(self, channel, NSweeps, timeout=100, sleep_interval=0.1):
 		""" Worker for above: wait for a given channel to trigger NSweeps times
@@ -542,8 +547,7 @@ class LeCroy_Scope:
 		if self.verbose: print(sweeps_per_acq, '/', NSweeps)
 		return timed_out, sweeps_per_acq
 
-	#-------------------------------------------------------------------------
-
+#########################################################################################################################################
 
 	def acquire(self, trace, raw=False)  -> numpy.array:
 		""" Read a trace from the scope, and return a numpy array of floats corresponding to the data displayed.
@@ -637,7 +641,7 @@ class LeCroy_Scope:
 		return data
 
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def time_array(self) -> numpy.array:
 		""" return a numpy array containing sample times
@@ -654,9 +658,7 @@ class LeCroy_Scope:
 		#                                    rather than 0 and 10ms as linspace(0,N*dt,N) would return
 		# Assume this is the case, because when requesting 10000 samples the scope actually returns 10001.  todo: test this, e.g. sample 1 kHz with 1000 pts, look at aliasing. Need the 1 kHz to be referenced to same frequency as scope
 
-	#-------------------------------------------------------------------------
-
-
+#########################################################################################################################################
 
 	def set_trigger_mode(self, trigger_mode)  -> str:
 		""" set the scope trigger mode to: 'AUTO', 'NORM', 'SINGLE', or 'STOP'
@@ -686,7 +688,7 @@ class LeCroy_Scope:
 
 		return prev_trigger_mode
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def expanded_name(self, tr) -> str:
 		""" Returns a long version of a trace name; e.g. C1 -> Channel1,  F2 -> Math2, etc """
@@ -694,14 +696,14 @@ class LeCroy_Scope:
 			return EXPANDED_TRACE_NAMES[tr]
 		return "unknown_trace_name"
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def header_bytes(self) -> numpy.array:
 		""" return a numpy byte array containing the header """
 		#invalid literal for int():  return numpy.array(self.trace_bytes[15:15+WAVEDESC_SIZE], dtype='B')
 		return self.trace_bytes[15:15+WAVEDESC_SIZE]
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def dumtest(self):
 		r1 = self.scope.query('PANEL_SETUP?')
@@ -712,7 +714,7 @@ class LeCroy_Scope:
 		r2 = self.scope.query('app.SaveRecall.Setup.DoSavePanel')
 		print(len(r2))
 
-	#-------------------------------------------------------------------------
+#########################################################################################################################################
 
 	def autoscale(self, trace):
 		averaging_count = self.averaging_count(trace)
@@ -786,9 +788,8 @@ class LeCroy_Scope:
 		else:
 			self.scope.write('AUTO_CALIBRATE OFF')
 
-#===============================================================================================================================================
-#<o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o> <o>
-#===============================================================================================================================================
+##########################################################################################################################################
+#########################################################################################################################################
 
 scope_ip_addr = '10.97.106.92'   # '128.97.13.149'
 
