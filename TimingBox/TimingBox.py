@@ -26,8 +26,12 @@ class TimingBoxBNC:
         self.IP_addr = IP_addr
         self.port_number = port_number
         self.client_socket = None
+        # Different limitations.
         self.n1 = 0.00 
         self.n2 = 0.02
+        self.MAX_ = 999.99999999975
+        self.MIN_ = 1e-9
+
 
 #########################################################################################################################################
 
@@ -168,8 +172,7 @@ class TimingBoxBNC:
                 pv_dict[ch_letter].add_callback(
                     lambda pvname = None, value = None, char_value = None,
                         ch_letter = ch_letter, ch_num = ch_num, callback = callback, **kwargs:
-                        callback(ch_num, ch_letter, pvname, value, char_value, **kwargs)
-                )
+                        callback(ch_num, ch_letter, pvname, value, char_value, **kwargs))
 
                 # Maps the readback values.
                 rbv_name = readback_map[pv_name]              
@@ -185,8 +188,8 @@ class TimingBoxBNC:
 
     
         # This is for the functions that are one per device
-        self.Mode_device = {}
-        self.Mode_device_RBV = {}
+        self.Mode = {}
+        self.Mode_RBV = {}
         self.TriggerMode = {}
         self.TriggerMode_RBV = {}
         self.Run = {}
@@ -194,6 +197,8 @@ class TimingBoxBNC:
         self.Period = {}
         self.Period_RBV = {}
         self.update = {}
+        self.Auto = {}
+        self.Auto_RBV = {}
 
         pv_types_device = {
             "Mode" : self.on_pv_change_mode_device,
@@ -212,6 +217,25 @@ class TimingBoxBNC:
             "Auto" : "Auto_RBV",
         }
         
+        for pvname, callback in pv_types_device.items():
+            if self.verbose: print(f"Doing {pvname} with callback {callback}")
+            pv_dict_device = getattr(self, pvname)
+
+            # Next step is to connect to the PVs
+            pv_dict_device[pvname] = epics.PV(f"{self.USER}{pv_name}")
+            pv_dict_device[pvname].connect(timeout = 5)
+            pv_dict_device[pvname].add_callback(lambda pvname = None, value = None, char_value = None, callback = callback, **kwargs:
+                                                callback(pvname, value, char_value, **kwargs))
+            
+            # Now for the RBV callbacks
+
+            rbv_name = readback_device[pvname]
+            rbv_dict = getattr(self, rbv_name)
+
+            rbv_dict["device"] = epics.PV(f"{self.USER}{rbv_name}")
+            rbv_dict["device"].connect(timeout = 5)
+            if self.verbose: print(f'PV {pvname} and callback {callback} has been done. Setup complete.')
+
 
 #########################################################################################################################################
     
@@ -226,25 +250,29 @@ class TimingBoxBNC:
         
         if self.verbose: print(f"Conected to {pvname}. Writing value: {value}")
         try:
-            value_str = str(value)
-            message = f":PULSE{ch_num}:DELAY {value_str}\r\n"
-            self.client_socket.send(message.encode())
-            self.client_socket.recv(2048)
-            time.sleep(0.02)
-            
-            
-            # Confriming the RBV
-            message_rbv = f":PULSE{ch_num}:DELAY?\r\n"
-            self.client_socket.send(message_rbv.encode())
-            time.sleep(0.02)
-            delay = self.client_socket.recv(2048).decode().strip()
-            if self.verbose: print('Delay: ', delay)
-            self.write_pv(self.Delay_RBV_ch[ch_letter], delay)
+            if value > self.MAX_:
+                raise ValueError(f"{value} is too big. Input smaller number.")
+            else:
+                value_str = str(value)
+                message = f":PULSE{ch_num}:DELAY {value_str}\r\n"
+                self.client_socket.send(message.encode())
+                self.client_socket.recv(2048)
+                time.sleep(0.02)
+                
+                
+                # Confriming the RBV
+                message_rbv = f":PULSE{ch_num}:DELAY?\r\n"
+                self.client_socket.send(message_rbv.encode())
+                time.sleep(0.02)
+                delay = self.client_socket.recv(2048).decode().strip()
+                if self.verbose: print('Delay: ', delay)
+                self.write_pv(self.Delay_RBV_ch[ch_letter], delay)
 
         except socket.error as e:
             if self.verbose: print(f"Socket error during communication: {e}")
             self.client_socket.close()
             self.client_socket = None
+
         except Exception as e:
             if self.verbose: print(f"An error occured: {e}")
 
@@ -260,27 +288,32 @@ class TimingBoxBNC:
                 return
         
         if self.verbose: print(f"Connected to {pvname}. Writing value: {value}")
+    
         try:
-            value_str = str(value)
-            message = f':PULSE:WIDT {value_str}\r\n'
-            
-            self.client_socket.send(message.encode())
-            time.sleep(0.02)
-            self.client_socket.recv(2048)
+            if (value > self.MAX_) or (value < self.MIN_):
+                raise ValueError(f"{value} is out of bounds. Try another value.")
+            else:
+                value_str = str(value)
+                message = f':PULSE:WIDT {value_str}\r\n'
+                
+                self.client_socket.send(message.encode())
+                time.sleep(0.02)
+                self.client_socket.recv(2048)
 
-            # Check RBV to confirm again
-            message_rbv = f":PULSE:WIDT?\r\n"
-         
-            self.client_socket.send(message_rbv.encode())
-            time.sleep(0.02)
-            width = self.client_socket.recv(2048).decode().strip()
-            if self.verbose: print(f"Width: {width}")
-            self.write_pv(self.Width_RBV_ch[ch_letter], width)
+                # Check RBV to confirm again
+                message_rbv = f":PULSE:WIDT?\r\n"
+            
+                self.client_socket.send(message_rbv.encode())
+                time.sleep(0.02)
+                width = self.client_socket.recv(2048).decode().strip()
+                if self.verbose: print(f"Width: {width}")
+                self.write_pv(self.Width_RBV_ch[ch_letter], width)
 
         except socket.error as e:
             if self.verbose: print(f"Socket error during communication: {e}")
             self.client_socket.close()
             self.client_socket = None
+
         except Exception as error:
             if self.verbose: print(f"An error occured: {error}")
 
@@ -318,6 +351,7 @@ class TimingBoxBNC:
             if self.verbose: print(f"Socket error during communication: {e}")
             self.client_socket.close()
             self.client_socket = None
+
         except Exception as e:
             if self.verbose: print(f"An error occured: {e}")
 
@@ -360,6 +394,7 @@ class TimingBoxBNC:
             if self.verbose: print(f"Socket error during communication: {e}")
             self.client_socket.close()
             self.client_socket = None
+
         except Exception as e:
             if self.verbose: print(f"An error occured: {e}")
 
@@ -401,6 +436,7 @@ def on_pv_change_state(self, ch_num: int, ch_letter: str, pvname = None, value =
         if self.verbose: print(f"Socket error during communication: {e}")
         self.client_socket.close()
         self.client_socket = None
+
     except Exception as e:
         if self.verbose: print(f"An error occured: {e}")
 
@@ -409,7 +445,7 @@ def on_pv_change_state(self, ch_num: int, ch_letter: str, pvname = None, value =
 #########################################################################################################################################
 # The following functions are functions for the entire BNC box. They are not indexed by channel.
 
-    def on_pv_change_trigger(self, ch_num: int, ch_letter: str, pvname = None, value = None, char_value = None, **kwargs):
+    def on_pv_change_trigger(self, pvname = None, value = None, char_value = None, **kwargs):
         """
         This function changes the trigger mode of the BNC box. Possible commands that can be inputted are:
             DIS  --> Disables external trigger
@@ -438,8 +474,8 @@ def on_pv_change_state(self, ch_num: int, ch_letter: str, pvname = None, value =
             self.client_socket.send(message_rbv.encode())
             time.sleep(0.02)
             trigger_type = self.client_socket.recv(2048).decode().strip()
-            if self.verbose: print(f"Trigger Mode: {source}")
-            self.write_pv(self.Trigger_RBV_ch, trigger_type) # Come back to this because Trigger only works for the whole system. Not per channel
+            if self.verbose: print(f"Trigger Mode: {trigger_type}")
+            self.write_pv(self.TriggerMode_RBV["device"], trigger_type) # Come back to this because Trigger only works for the whole system. Not per channel
 
         except socket.error as e:
             if self.verbose: print(f"Socket error during communication: {e}")
@@ -450,7 +486,7 @@ def on_pv_change_state(self, ch_num: int, ch_letter: str, pvname = None, value =
 
 #########################################################################################################################################
 
-    def on_pv_change_run(self, ch_num: int, ch_letter: str, pvname = None, value = None, char_value = None, **kwargs):
+    def on_pv_change_run(self, pvname = None, value = None, char_value = None, **kwargs):
         """
         This function will check if the timing box is running or not. This command is similar to pressing the RUN/STOP button.
             STATE --> ON/OFF == 0/1
@@ -485,18 +521,19 @@ def on_pv_change_state(self, ch_num: int, ch_letter: str, pvname = None, value =
             time.sleep(self.n2)
             state = self.client_socket.recv(2048).decode().strip()
             if self.verbose: print(f"BNC State: {state}")
-            self.write_pv(self.Run_RBV, state) #NOTE: No need to define channel because this controls entire system
+            self.write_pv(self.Run_RBV["device"], state) #NOTE: No need to define channel because this controls entire system
 
         except socket.error as e:
             if self.verbose: print(f"Socket error during communication: {e}")
             self.client_socket.close()
             self.client_socket = None
+
         except Exception as e:
             if self.verbose: print(f"An error occured: {e}")
 
 #########################################################################################################################################
 
-    def on_pv_change_period(self, ch_num: int, ch_letter: str, pvname = None, value = None, char_value = None, **kwargs):
+    def on_pv_change_period(self, pvname = None, value = None, char_value = None, **kwargs):
         """
         This function changes the period at which the box triggers at. Ranges from 100ns to 5000s.
         :PULSE0:PERIOD {value} --> Send the value
@@ -508,10 +545,13 @@ def on_pv_change_state(self, ch_num: int, ch_letter: str, pvname = None, value =
                 self.client_socket.connect((self.IP_addr, self.port_number))
             except socket.error as e:
                 if self.verbose: print(f"Socket reconnection failed: {e}")
+                return
 
         if self.verbose: print(f"Connected to {pvname}. Writing value: {value}")
 
         try:
+            if (value > 5000) or (value < 1e-7):
+                raise ValueError(f"Value {value} is out of range. Try another value.")
             value_str = str(value)
             message = f":PULSE0:PERIOD {value_str}\r\n"
             self.client_socket.send(message.encode())
@@ -524,21 +564,100 @@ def on_pv_change_state(self, ch_num: int, ch_letter: str, pvname = None, value =
             time.sleep(self.n2)
             period = self.client_socket.recv(2048).decode().strip()
             if self.verbose: print(f"The period is: {period}")
-            self.write_pv(self.Period_RBV, period)
+            self.write_pv(self.Period_RBV["device"], period)
+
         except socket.error as e:
             if self.verbose: print(f"Socket error during communication: {e}")
             self.client_socket.close()
             self.client_socket = None
+
         except Exception as e:
             if self.verbose: print(f"An error occurred: {e}")
 
 #########################################################################################################################################
-    def on_pv_change_mode_device(self, ch_num: int, ch_letter: str, pvname = None, value = None, char_value = None, **kwargs):
+    def on_pv_change_mode_device(self, pvname = None, value = None, char_value = None, **kwargs):
         """
         This function will change the mode of the entire scope:
             :PULSE0:MODE {value} --> Possible values: Normal, Single, Burst, Dcycle
             :PULSE0:MODE? --> Returns the readback value
         """
+        if self.client_socket is None:
+            try:
+                self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.client_socket.connect((self.IP_addr, self.port_number))
+            except socket.error as e:
+                if self.verbose: print(f"Socket reconnection failed: {e}")
+                return
+            
+        if self.verbose: print(f"Connected to {pvname}. Writing value: {value}")
+
+        try:
+            value_str = str(value)
+            message = f":PULSE0:MODE {value_str}\r\n"
+            self.client_socket.send(message.encode())
+            time.sleep(self.n1)
+            self.client_socket.recv(2048)
+
+            # Checking for RBV
+            message_rbv = ":PULSE0:MODE?\r\n"
+            self.client_socket.send(message_rbv.encode())
+            time.sleep(self.n2)
+            mode = self.client_socket.recv(2048).decode().strip()
+            if self.verbose: print(f"The mode now is: {mode}")
+            self.write_pv(self.Mode_RBV["device"], mode)
+
+        except socket.error as e:
+            if self.verbose: print(f"Socket error during communication: {e}")
+            self.client_socket.close()
+            self.client_socket = None
+
+        except Exception as e:
+            if self.verbose: print(f"An error occurred: {e}")
+
+#########################################################################################################################################
+
+    def on_pv_change_auto(self, pvname = None, value = None, char_value = None, **kwargs):
+        """
+        This command will turn on or off the automatic screen updates. If automatic speed updates is on
+        the program will not be able to sned and proccess commands in 0.03s. It has to be at minumum 0.05s
+        If the autodisplay is off then the device can process commands at 0.03s. So:
+
+            auto_update = ON ---> time.sleep(0.05)
+            auto_update = OFF ---> time.sleep(0.03)
+        """
+        if self.client_socket is None:
+            try:
+                self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.client_socket.connect((self.IP_addr, self.port_number))
+            except socket.error as e:
+                if self.verbose: print(f"Socket reconnection failed: {e}")
+                return
+        
+        if self.verbose: print(f"Connected to {pvname}. Writing value: {value}")
+
+        try:
+            value_str = str(value)
+            message = f":DISPLAY:MODE {value_str}\r\n"
+            self.client_socket.send(message.encode())
+            time.sleep(self.n1)
+            self.client_socket.recv(2048)
+
+            # Checking for RBV
+            message_rbv = ":DISPLAY:MODE?\r\n"
+            self.client_socket.send(message_rbv.encode())
+            time.sleep(self.n2)
+            rbv = self.client_socket.recv(2048).decode().strip()
+            print("The auto update is: ", rbv)
+            self.write_pv(self.Auto_RBV["device"], rbv)
+
+        except socket.error as e:
+            if self.verbose: print(f"Socket error during communication: {e}")
+            self.client_socket.close()
+            self.client_socket = None
+
+        except Exception as e:
+            if self.verbose: print(f"An error occurred: {e}")
+
 
 #########################################################################################################################################
 #########################################################################################################################################
