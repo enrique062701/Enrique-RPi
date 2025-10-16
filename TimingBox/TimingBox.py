@@ -496,7 +496,7 @@ def on_pv_change_state(self, ch_num: int, ch_letter: str, pvname = None, value =
 
 #########################################################################################################################################
 
-    def on_pv_change_period(pvname = None, value = None, char_value = None, **kwargs):
+    def on_pv_change_period(self, ch_num: int, ch_letter: str, pvname = None, value = None, char_value = None, **kwargs):
         """
         This function changes the period at which the box triggers at. Ranges from 100ns to 5000s.
         :PULSE0:PERIOD {value} --> Send the value
@@ -533,7 +533,7 @@ def on_pv_change_state(self, ch_num: int, ch_letter: str, pvname = None, value =
             if self.verbose: print(f"An error occurred: {e}")
 
 #########################################################################################################################################
-    def on_pv_change_mode_device(pvname = None, value = None, char_value = None, **kwargs):
+    def on_pv_change_mode_device(self, ch_num: int, ch_letter: str, pvname = None, value = None, char_value = None, **kwargs):
         """
         This function will change the mode of the entire scope:
             :PULSE0:MODE {value} --> Possible values: Normal, Single, Burst, Dcycle
