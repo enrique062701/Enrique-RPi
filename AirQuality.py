@@ -17,7 +17,7 @@ import inspect
 sensor = adafruit_ahtx0.AHTx0(board.I2C())
 
 while True:
-    print("\nTemperature: %0.1f C" % sensor.temperature)
+    print(sensor.temperature)
     time.sleep(2)
 
 
