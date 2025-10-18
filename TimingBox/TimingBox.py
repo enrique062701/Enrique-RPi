@@ -552,19 +552,20 @@ def on_pv_change_state(self, ch_num: int, ch_letter: str, pvname = None, value =
         try:
             if (value > 5000) or (value < 1e-7):
                 raise ValueError(f"Value {value} is out of range. Try another value.")
-            value_str = str(value)
-            message = f":PULSE0:PERIOD {value_str}\r\n"
-            self.client_socket.send(message.encode())
-            time.sleep(self.n1)
-            self.client_socket.recv(2048)
+            else:
+                value_str = str(value)
+                message = f":PULSE0:PERIOD {value_str}\r\n"
+                self.client_socket.send(message.encode())
+                time.sleep(self.n1)
+                self.client_socket.recv(2048)
 
-            # Checking for RBV
-            message_rbv = f":PULSE0:PERIOD?\r\n"
-            self.client_socket.send(message_rbv.encode())
-            time.sleep(self.n2)
-            period = self.client_socket.recv(2048).decode().strip()
-            if self.verbose: print(f"The period is: {period}")
-            self.write_pv(self.Period_RBV["device"], period)
+                # Checking for RBV
+                message_rbv = f":PULSE0:PERIOD?\r\n"
+                self.client_socket.send(message_rbv.encode())
+                time.sleep(self.n2)
+                period = self.client_socket.recv(2048).decode().strip()
+                if self.verbose: print(f"The period is: {period}")
+                self.write_pv(self.Period_RBV["device"], period)
 
         except socket.error as e:
             if self.verbose: print(f"Socket error during communication: {e}")
