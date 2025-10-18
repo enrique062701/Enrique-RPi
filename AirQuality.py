@@ -10,12 +10,11 @@ import inspect
 # Communication over the board's default I2C bus
 
 # First step is to create a sensor object
-print(inspect.getsource(adafruit_ahtx0))
+#print(inspect.getsource(board))
 
 
 
-i2c = board.STEMMA_I2C()
-sensor = adafruit_ahtx0.AHTx0(i2c)
+sensor = adafruit_ahtx0.AHTx0(board.I2C())
 
 while True:
     print("\nTemperature: %0.1f C" % sensor.temperature)
