@@ -20,9 +20,8 @@ Looking at the GPS Logs Solution folder, there are 6 different files that are co
 
 NOTE: Original data not provided due to limitations from NDA. This is my own work and can be created using publically available
 documentes such as the OEM719 Manual. This does not violate any NDA as this is my work and no proprietary information as been provide.
-Company is also kept hidden. This was an interview project. I passed the exam (correct work) but unfortunately someone finished before 
-me and scheduled the final round interview before me and got the job.
-
+Company is also kept hidden. 
+Feel free to use for any purposes as the information here is publically available.
 Enrique Cisneros Jr 10/27/2025
 """
 import csv
