@@ -1,8 +1,8 @@
 import os
 import numpy as np
 import pandas as pd
-from tm_devices import DeviceManager
 from epics import PV, caget, caput
+from tm_devices import DeviceManager
 from tm_data_types import read_file, AnalogWaveform, DigitalWaveform
 import time
 import os
