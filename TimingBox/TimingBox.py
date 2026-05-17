@@ -20,12 +20,16 @@ class TimingBoxBNC:
         # All of these will now be set automatically when instantiated 
         #self.get_macros()
         #self.setup_channels(self.number_of_channels)
-        
-        self.USER = USER
+        if None in (USER, IP_addr, port_number):
+            self.get_macros()
+        else:
+            self.USER = USER
+            self.IP_addr = IP_addr
+            self.port_number = port_number
+
         self.verbose = verbose
-        self.IP_addr = IP_addr
-        self.port_number = port_number
         self.client_socket = None
+        self.get_macros()
         # Different limitations.
         self.n1 = 0.00 
         self.n2 = 0.02
@@ -44,7 +48,7 @@ class TimingBoxBNC:
         macros = {}
 
         for arg in sys.argv[1:]:
-            if '=' in sys.arg:
+            if '=' in arg:
                 key, val = arg.split('=', 1)
                 macros[key] = val
         
@@ -58,7 +62,7 @@ class TimingBoxBNC:
                 self.IP_addr = macros["IP_addr"]
                 self.port_number = int(macros["port_number"])
                 self.number_of_channels = int(macros["number_of_channels"])
-        
+
 #########################################################################################################################################
     
     def connect_device(self, IP_addr: str, port_number: int):
@@ -67,7 +71,7 @@ class TimingBoxBNC:
         """
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            self.client_socket.connect(self.IP_addr, self.port_number)
+            self.client_socket.connect((self.IP_addr, self.port_number))
         except socket.error as e:
             if self.verbose: print(f"Initial socket connection failed: {e}")
             self.client_socket = None
@@ -670,9 +674,10 @@ if __name__ == "__main__":
         # IP_addr --> The IP address of the device
         # port_number --> The port number of the box
         # number_of_channels --> You should also define how many channels the device has
-
-    BNC1 = TimingBoxBNC(USER = "BNC1:", IP_addr = "10.97.106.97", port_number = 2101, verbose = True)
-    BNC1.setup_channels(8) # Define 8 different channels
+    BNC1 = TimingBoxBNC()
+    # OR Can initialize them manually.
+    #BNC1 = TimingBoxBNC(USER = "BNC1:", IP_addr = "10.97.106.97", port_number = 2101, verbose = True)
+    #BNC1.setup_channels(8) # Define 8 different channels
     print("Python script is ready for controlling.")
 
     while True:

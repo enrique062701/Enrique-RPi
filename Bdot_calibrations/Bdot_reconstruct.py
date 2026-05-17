@@ -123,7 +123,7 @@ class Bdot_actions(Data_cleaner):
             v_real = mag_for_calc * np.cos(phase_for_calc) # Real part
             v_imaginary = mag_for_calc * np.sin(phase_for_calc) # Imaginary part
         elif imaginary == True:
-            phase_for_calc = cleand_data["Phase"]
+            phase_for_calc = clean_data["Phase"]
 
             v_real = mag_for_calc * np.cos(phase_for_calc)
             v_imaginary = mag_for_calc * np.sin(phase_for_calc)
@@ -170,7 +170,7 @@ class Bdot_actions(Data_cleaner):
         self.tau_fit = tau_fit
         self.tau_s_fit = tau_s_fit
         
-        return effective_area, 
+        return effective_area
         
 
     def B_field_reconstruct(self, voltage, time, **kwargs):
@@ -267,7 +267,7 @@ class Plotting_Functions(Data_cleaner):
         field = Bdot_actions.B_field_reconstruct(self.HDF5_data['MSO24:Ch4:Trace'], self.HDF5_data['MSO24:Time'])
 
         for trace in range(len(field[0])):
-            ax[0].plot(time, field[0][i])
+            ax[0].plot(time, field[0][trace])
         ax[0].set_title('B-Field vs Time: All runs')
         ax[0].set_xlabel('Time')
         ax[0].set_ylabel('Field Data')
