@@ -41,9 +41,11 @@ import threading
 import queue
 import sys
 
-
+# Initial Handshake - Arbitration_id
 LASER_ANNOUNCE_ID  = 0x1803280A   # Laser → broadcast on power-up
 CTRL_ANNOUNCE_ID   = 0x0003080A   # Controller → reply to laser announce
+
+# After handshake - Arbitration_id
 LASER_TELEM_ID     = 0x18820810   # Laser → telemetry / status
 CTRL_CMD_ID        = 0x19000410   # Controller → command frames
 
