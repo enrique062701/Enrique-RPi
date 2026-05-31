@@ -1,6 +1,7 @@
 import busio
 import board
 import time
+import epics
 
 class AirSensor:
     def __init__(self, Device_addr):
